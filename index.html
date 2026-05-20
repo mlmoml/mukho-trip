@@ -113,6 +113,26 @@ body.edit-mode .item-tag { display:none; }
 .map-overlay-card{position:absolute;bottom:24px;right:24px;background:var(--card-bg);padding:16px 20px;border-radius:8px;box-shadow:0 12px 32px rgba(26,37,48,0.08);backdrop-filter:blur(8px);border:1px solid rgba(214,232,239,0.5);z-index:20;max-width:320px;pointer-events:auto;transition:background 0.3s;}
 .overlay-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ocean);margin-bottom:4px;}
 .overlay-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+.place-card { position:relative; width:300px; background:var(--white); border-radius:12px; box-shadow:0 12px 36px rgba(0,0,0,0.18); font-family:var(--sans); overflow:visible; margin-bottom:12px; color:var(--ink); }
+.place-card::after { content:''; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-top:9px solid var(--white); }
+.pc-header { display:flex; align-items:flex-start; justify-content:space-between; padding:14px 16px 6px; gap:8px; }
+.pc-name-wrap { flex:1; min-width:0; }
+.pc-name { font-size:15px; font-weight:600; line-height:1.3; color:var(--ink); }
+.pc-cat { font-size:11px; color:var(--ocean-mid); margin-top:3px; font-weight:500; }
+.pc-close { background:transparent; border:none; color:var(--muted); font-size:18px; cursor:pointer; padding:0; line-height:1; flex-shrink:0; }
+.pc-close:hover { color:var(--ink); }
+.pc-body { padding:0 16px 12px; font-size:12px; color:var(--muted); line-height:1.5; }
+.pc-addr { display:flex; gap:6px; align-items:flex-start; }
+.pc-addr-label { color:var(--ocean-mid); font-weight:500; flex-shrink:0; }
+.pc-phone { color:var(--coral); font-weight:500; margin-top:4px; font-family:var(--mono); }
+.pc-actions { display:flex; border-top:1px solid var(--border); }
+.pc-actions a { flex:1; padding:10px 4px; text-align:center; font-size:11px; color:var(--ocean-mid); text-decoration:none; font-weight:500; border-right:1px solid var(--border); transition:background 0.15s; }
+.pc-actions a:last-child { border-right:none; border-bottom-right-radius:12px; }
+.pc-actions a:first-child { border-bottom-left-radius:12px; }
+.pc-actions a:hover { background:var(--ocean-pale); }
+.pc-actions a.primary { background:var(--ocean-mid); color:#fff; font-weight:600; }
+.pc-actions a.primary:hover { background:var(--ocean); color:#fff; }
+
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--ocean-pale);border-radius:3px;}
@@ -208,7 +228,7 @@ const defaultSchedule = [
 
 let textMetaData = {};
 let initialTimelineData = [];
-let map, geocoder, polyline;
+let map, geocoder, places, polyline;
 let markers = [];
 let infowindows = [];
 let isEditMode = false;
@@ -307,12 +327,7 @@ function renderTimelineUI() {
 
 function focusMapLocation(itemId) {
   if (isEditMode) return;
-  const targetData = markerMap[itemId];
-  if (!targetData) return;
-
-  infowindows.forEach(iw => iw.close());
-  map.panTo(targetData.coords);
-  targetData.infowindow.open(map, targetData.marker);
+  openPlaceCard(itemId);
 }
 
 function addNewItem(day) {
@@ -390,13 +405,62 @@ themeBtn.addEventListener('click', () => {
   if (!isEditMode) updateMapEngine();
 });
 
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function closeAllOverlays() {
+  Object.values(markerMap).forEach(m => { if (m.overlay) m.overlay.setMap(null); });
+}
+
+function buildPlaceCardHTML(loc, placeData, lat, lng) {
+  const name = escapeHtml(loc.title);
+  const category = placeData && placeData.category_name ? escapeHtml(placeData.category_name.split('>').pop().trim()) : '';
+  const roadAddr = placeData && placeData.road_address_name ? escapeHtml(placeData.road_address_name) : '';
+  const jibunAddr = escapeHtml(loc.address || (placeData && placeData.address_name) || '');
+  const phone = placeData && placeData.phone ? escapeHtml(placeData.phone) : '';
+  const placeUrl = placeData && placeData.place_url ? placeData.place_url : `https://map.kakao.com/link/search/${encodeURIComponent(loc.address || loc.title)}`;
+  const routeUrl = `https://map.kakao.com/link/to/${encodeURIComponent(loc.title)},${lat},${lng}`;
+  const roadviewUrl = `https://map.kakao.com/link/roadview/${lat},${lng}`;
+
+  return `
+    <div class="place-card">
+      <div class="pc-header">
+        <div class="pc-name-wrap">
+          <div class="pc-name">${name}</div>
+          ${category ? `<div class="pc-cat">${category}</div>` : ''}
+        </div>
+        <button class="pc-close" type="button" onclick="closeAllOverlays()">×</button>
+      </div>
+      <div class="pc-body">
+        ${roadAddr ? `<div class="pc-addr"><span class="pc-addr-label">도로명</span><span>${roadAddr}</span></div>` : ''}
+        ${jibunAddr ? `<div class="pc-addr"><span class="pc-addr-label">${roadAddr ? '지번' : '주소'}</span><span>${jibunAddr}</span></div>` : ''}
+        ${phone ? `<div class="pc-phone">${phone}</div>` : ''}
+      </div>
+      <div class="pc-actions">
+        <a href="${placeUrl}" target="_blank">상세보기</a>
+        <a href="${roadviewUrl}" target="_blank">로드뷰</a>
+        <a href="${routeUrl}" target="_blank" class="primary">길찾기</a>
+      </div>
+    </div>
+  `;
+}
+
+function openPlaceCard(itemId) {
+  const entry = markerMap[itemId];
+  if (!entry) return;
+  closeAllOverlays();
+  entry.overlay.setMap(map);
+  map.panTo(entry.coords);
+}
+
 function updateMapEngine() {
   if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) return;
   markers.forEach(m => m.setMap(null));
-  infowindows.forEach(i => i.close());
+  closeAllOverlays();
   if (polyline) polyline.setMap(null);
-  
-  markers = []; 
+
+  markers = [];
   infowindows = [];
   markerMap = {};
 
@@ -410,40 +474,41 @@ function updateMapEngine() {
   validLocations.forEach((loc, index) => {
     geocoder.addressSearch(loc.address, function(result, status) {
       if (status === kakao.maps.services.Status.OK) {
-        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        const lat = result[0].y;
+        const lng = result[0].x;
+        const coords = new kakao.maps.LatLng(lat, lng);
         positionsWithOrder[index] = coords;
-        
+
         const marker = new kakao.maps.Marker({ map: map, position: coords });
         markers.push(marker);
-        
-        const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(loc.address)}`;
-        const kakaoRouteUrl = `https://map.kakao.com/link/to/${encodeURIComponent(loc.title)},${result[0].y},${result[0].x}`;
-        const kakaoRoadviewUrl = `https://map.kakao.com/link/roadview/${result[0].y},${result[0].x}`;
-        const infowindow = new kakao.maps.InfoWindow({
-          removable: true,
-          content: `
-            <div style="padding:10px 14px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center; min-width:180px;">
-              <div style="margin-bottom:6px; font-weight:600;">${loc.title}</div>
-              <div style="font-size:10px; color:#6b7f8a; margin-bottom:8px; font-weight:400;">${loc.address}</div>
-              <div style="display:flex; gap:4px; justify-content:center; flex-wrap:wrap;">
-                <a href="${kakaoMapSearchUrl}" target="_blank" style="font-size:10px; color:#1a2530; background:#fee500; padding:3px 7px; border-radius:3px; text-decoration:none; font-weight:600;">상세 ↗</a>
-                <a href="${kakaoRouteUrl}" target="_blank" style="font-size:10px; color:#fff; background:#2a6b82; padding:3px 7px; border-radius:3px; text-decoration:none; font-weight:600;">길찾기 ↗</a>
-                <a href="${kakaoRoadviewUrl}" target="_blank" style="font-size:10px; color:#fff; background:#d4614a; padding:3px 7px; border-radius:3px; text-decoration:none; font-weight:600;">로드뷰 ↗</a>
-              </div>
-            </div>`
-        });
-        infowindows.push(infowindow);
-        
-        kakao.maps.event.addListener(marker, 'click', function() {
-          infowindows.forEach(iw => iw.close());
-          infowindow.open(map, marker);
+
+        const overlay = new kakao.maps.CustomOverlay({
+          position: coords,
+          content: buildPlaceCardHTML(loc, null, lat, lng),
+          xAnchor: 0.5,
+          yAnchor: 1,
+          zIndex: 100
         });
 
-        markerMap[loc.id] = {
-          marker: marker,
-          infowindow: infowindow,
-          coords: coords
-        };
+        markerMap[loc.id] = { marker, overlay, coords, placeData: null };
+
+        kakao.maps.event.addListener(marker, 'click', function() {
+          openPlaceCard(loc.id);
+        });
+
+        places.keywordSearch(loc.title, function(data, pStatus) {
+          if (pStatus !== kakao.maps.services.Status.OK || !data || data.length === 0) return;
+          let closest = data[0];
+          let closestDist = Math.hypot(parseFloat(data[0].y) - parseFloat(lat), parseFloat(data[0].x) - parseFloat(lng));
+          for (let i = 1; i < data.length; i++) {
+            const d = Math.hypot(parseFloat(data[i].y) - parseFloat(lat), parseFloat(data[i].x) - parseFloat(lng));
+            if (d < closestDist) { closest = data[i]; closestDist = d; }
+          }
+          if (closestDist < 0.005) {
+            markerMap[loc.id].placeData = closest;
+            overlay.setContent(buildPlaceCardHTML(loc, closest, lat, lng));
+          }
+        });
 
         bounds.extend(coords);
       }
@@ -506,7 +571,9 @@ window.addEventListener('load', () => {
     mapTypeId: kakao.maps.MapTypeId.ROADMAP
   });
   geocoder = new kakao.maps.services.Geocoder();
+  places = new kakao.maps.services.Places();
   setupMapControls();
+  kakao.maps.event.addListener(map, 'click', closeAllOverlays);
   loadDataFromServer();
 });
 </script>
