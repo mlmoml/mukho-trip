@@ -99,7 +99,6 @@ body.edit-mode .item-tag { display:none; }
 @media(max-width:1024px){.map-container{height:400px;}}
 #naverMap{width:100%;height:100%;}
 
-/* 지도 내 바로가기 단추 커스텀 CSS */
 .kakao-redirect-btn {
   position: absolute; top: 16px; left: 16px; z-index: 30;
   background: #fee500; color: #181c24; font-family: var(--sans); font-size: 12px; font-weight: 600;
@@ -178,26 +177,24 @@ const defaultMeta = {
 };
 
 const defaultSchedule = [
-  { "id": "item1", "day": "day1", "time": "06:30", "title": "금강마을에서 출발", "desc": "약 230km, 3시간 예상 중간 여주휴게소 들를 예정", "tag": "none", "address": "경기도 부천시 원미구 계남로 106" },
-  { "id": "item2", "day": "day1", "time": "08:00", "title": "여주휴게소 도착", "desc": "출발 약 1시간 30분 지점, 간단히 아침 먹거나 화장실 갔다오기~!", "tag": "spot", "address": "경기도 여주시 가남읍 여주남로 722" },
-  { "id": "item3", "day": "day1", "time": "09:00", "title": "묵호 도착 - 어달항 노상 주차장으로 이동", "desc": "바로 주차 후 도보 일정 시작 - 주차 무료", "tag": "spot", "address": "강원 동해시 일출로 217" },
-  { "id": "item4", "day": "day1", "time": "09:20", "title": "어달항 & 어달삼거리", "desc": "사진 스팟마다 가서 열심히 사진 찍기~", "tag": "spot", "address": "강원 동해시 일출로 230" },
-  { "id": "item5", "day": "day1", "time": "10:00", "title": "등대그집, 무코야 소품샵", "desc": "등대그집 오픈 9시 먼저 들럿다가 10시 30분 오픈되는 무코야 소품샵 들리기", "tag": "spot", "address": "강원 동해시 논골1길 17-6 1층" },
-  { "id": "item6", "day": "day2", "time": "10:00", "title": "삼척 준펜션", "desc": "정든 숙소를 정리하고 둘째 날의 새로운 여정을 향해 출발합니다.", "tag": "stay", "address": "강원특별자치도 삼척시 근덕면 삼척로 2100" },
-  { "id": "item7", "day": "day2", "time": "10:30", "title": "추암 촛대바위", "desc": "동해의 보석, 애국가 첫 소절의 배경화면으로 유명한 신비로운 기암괴석과 출렁다리를 감상합니다.", "tag": "spot", "address": "강원특별자치도 동해시 촛대바위길 28" },
+  { "id": "item1", "day": "day1", "time": "06:30", "title": "금강마을에서 출발", "desc": "약 230km, 3시간 예상 중간 여주휴게소 들를 예정", "tag": "none", "address": "부천 금강마을" },
+  { "id": "item2", "day": "day1", "time": "08:00", "title": "여주휴게소 도착", "desc": "출발 약 1시간 30분 지점, 간단히 아침 먹거나 화장실 갔다오기~!", "tag": "spot", "address": "여주휴게소 강릉방향" },
+  { "id": "item3", "day": "day1", "time": "09:00", "title": "묵호 도착 - 어달항 노상 주차장으로 이동", "desc": "바로 주차 후 도보 일정 시작 - 주차 무료", "tag": "spot", "address": "어달항" },
+  { "id": "item4", "day": "day1", "time": "09:20", "title": "어달항 & 어달삼거리", "desc": "사진 스팟마다 가서 열심히 사진 찍기~", "tag": "spot", "address": "어달삼거리" },
+  { "id": "item5", "day": "day1", "time": "10:00", "title": "등대그집, 무코야 소품샵", "desc": "등대그집 오픈 9시 먼저 들럿다가 10시 30분 오픈되는 무코야 소품샵 들리기", "tag": "spot", "address": "등대그집" },
+  { "id": "item6", "day": "day2", "time": "10:00", "title": "삼척 준펜션", "desc": "정든 숙소를 정리하고 둘째 날의 새로운 여정을 향해 출발합니다.", "tag": "stay", "address": "삼척 준펜션" },
+  { "id": "item7", "day": "day2", "time": "10:30", "title": "추암 촛대바위", "desc": "동해의 보석, 애국가 첫 소절의 배경화면으로 유명한 신비로운 기암괴석과 출렁다리를 감상합니다.", "tag": "spot", "address": "추암 촛대바위" },
   { "id": "item8", "day": "day2", "time": "13:00", "title": "묵호역 복귀 및 해산", "desc": "즐거웠던 기억을 안고 다시 묵호역으로 돌아와 여정을 마무리합니다. 다음에 또 만나요!", "tag": "none", "address": "" },
-  { "id": "item_1779246005821", "day": "day1", "time": "11:00", "title": "도째비골 스카이밸리", "desc": "스카이밸리에서 자이언트 슬라이드, 스카이바이크 타기!", "tag": "spot", "address": "강원 동해시 묵호진동 2-109" },
-  { "id": "item_1779249266721", "day": "day1", "time": "12:10", "title": "묵호항 - 묵호항 공영주차장 이동", "desc": "묵호항쪽에 식당, 카페들 많으니까 이동~", "tag": "none", "address": "강원 동해시 묵호진동 95-2" },
-  { "id": "item_1779249270015", "day": "day1", "time": "12:20", "title": "점심시간~", "desc": "오뚜기 칼국수/대우 칼국수/거동탕수육 중 골라서 가기!! (다 웨이팅 있음, 기다리면서 물회 포장 고민고민~)", "tag": "food", "address": "강원 동해시 일출로 83 거동탕수육" },
-  { "id": "item_1779249271231", "day": "day1", "time": "14:00", "title": "카라멜 스테이션 or 현상소 카페가기~", "desc": "둘다 거리 비슷해서 더 끌리는곳 가기!", "tag": "none", "address": "강원 동해시 발한로 197 1층 101호" },
-  { "id": "item_1779249625242", "day": "day1", "time": "15:00", "title": "동쪽바다중앙시장 가기~", "desc": "파닭김밥 브레이크 타임 14시 30분 ~ 16시까지니까 파닭김밥 포장할때 참고!", "tag": "none", "address": "강원특별자치도 동해시 중앙시장길 12 뉴월드상가 B동 2층" },
-  { "id": "item_1779249626316", "day": "day1", "time": "12:00", "title": "새 일정 명칭", "desc": "설명을 입력해 주세요.", "tag": "none", "address": "" },
-  { "id": "item_1779249628486", "day": "day1", "time": "12:00", "title": "새 일정 명칭", "desc": "설명을 입력해 주세요.", "tag": "none", "address": "" }
+  { "id": "item_1779246005821", "day": "day1", "time": "11:00", "title": "도째비골 스카이밸리", "desc": "스카이밸리에서 자이언트 슬라이드, 스카이바이크 타기!", "tag": "spot", "address": "도째비골 스카이밸리" },
+  { "id": "item_1779249266721", "day": "day1", "time": "12:10", "title": "묵호항 - 묵호항 공영주차장 이동", "desc": "묵호항쪽에 식당, 카페들 많으니까 이동~", "tag": "none", "address": "묵호항 공영주차장" },
+  { "id": "item_1779249270015", "day": "day1", "time": "12:20", "title": "점심시간~", "desc": "오뚜기 칼국수/대우 칼국수/거동탕수육 중 골라서 가기!!", "tag": "food", "address": "동해 거동탕수육" },
+  { "id": "item_1779249271231", "day": "day1", "time": "14:00", "title": "카라멜 스테이션 or 현상소 카페가기~", "desc": "둘다 거리 비슷해서 더 끌리는곳 가기!", "tag": "none", "address": "카라멜스테이션" },
+  { "id": "item_1779249625242", "day": "day1", "time": "15:00", "title": "동쪽바다중앙시장 가기~", "desc": "파닭김밥 브레이크 타임 참고!", "tag": "none", "address": "동쪽바다중앙시장" }
 ];
 
 let textMetaData = {};
 let initialTimelineData = [];
-let map, geocoder, polyline;
+let map, placesService, geocoder, polyline;
 let markers = [];
 let infowindows = [];
 let isEditMode = false;
@@ -237,7 +234,7 @@ async function saveDataToServer() {
         schedule: initialTimelineData
       })
     });
-    alert("공용 데이터베이스 동기화 완료! 링크를 연 모든 일행의 화면이 업데이트되었습니다.");
+    alert("공용 데이터베이스 동기화 완료!");
   } catch (error) {
     alert("데이터베이스 저장 처리에 실패했습니다.");
   }
@@ -269,10 +266,10 @@ function renderTimelineUI() {
         <div class="item-title editable-field" contenteditable="${isEditMode}">${item.title}</div>
         <div class="item-desc editable-field" contenteditable="${isEditMode}">${item.desc}</div>
         <button class="btn-delete" onclick="event.stopPropagation(); deleteItem('${item.id}')">삭제</button>
-        <input type="text" class="address-field" placeholder="정확한 도로명 주소 입력" value="${item.address || ''}" onclick="event.stopPropagation();">
+        <input type="text" class="address-field" placeholder="장소명(POI) 또는 도로명 주소 입력" value="${item.address || ''}" onclick="event.stopPropagation();">
         <div>
           <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
-          ${hasAddress ? `<a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" onclick="event.stopPropagation();">카카오맵 상세 보기 ↗</a>` : ''}
+          ${hasAddress ? `<a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" id="link-${item.id}" onclick="event.stopPropagation();">카카오맵 상세 보기 ↗</a>` : ''}
         </div>
         <select class="item-tag-select" onclick="event.stopPropagation();">
           <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
@@ -297,11 +294,9 @@ function focusMapLocation(itemId) {
   targetData.infowindow.open(map, targetData.marker);
 }
 
-// 사용자가 지도를 움직이거나 확대할 때마다 상단 카카오맵 바로가기 버튼 링크를 실시간 갱신하는 함수
 function updateKakaoMapRedirectUrl() {
   const center = map.getCenter();
   const level = map.getLevel();
-  // 카카오맵 맵 링크 스펙 좌표 연동 구조 배정
   const redirectUrl = `https://map.kakao.com/?map_type=TYPE_MAP&target=car&rt=,,&from=&to=&lu=&sys=web&eX=&eY=&sX=&sY=&cx=${center.getLng()}&cy=${center.getLat()}&level=${15 - level}`;
   document.getElementById('kakaoLinkBtn').href = redirectUrl;
 }
@@ -381,6 +376,7 @@ themeBtn.addEventListener('click', () => {
   if (!isEditMode) updateMapEngine();
 });
 
+// [핵심 변경 및 추가된 부분] POI 검색과 주소 검색을 결합한 하이브리드 지도 엔진
 function updateMapEngine() {
   if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) return;
   markers.forEach(m => m.setMap(null));
@@ -398,53 +394,74 @@ function updateMapEngine() {
   const positionsWithOrder = new Array(validLocations.length);
   let processedCount = 0;
 
-  validLocations.forEach((loc, index) => {
-    geocoder.addressSearch(loc.address, function(result, status) {
-      if (status === kakao.maps.services.Status.OK) {
-        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-        positionsWithOrder[index] = coords;
-        
-        const marker = new kakao.maps.Marker({ map: map, position: coords });
-        markers.push(marker);
-        
-        const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(loc.address)}`;
-        const infowindow = new kakao.maps.InfoWindow({ 
-          content: `
-            <div style="padding:8px 12px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center;">
-              <div style="margin-bottom:4px;">${loc.title}</div>
-              <a href="${kakaoMapSearchUrl}" target="_blank" style="font-size:10px; color:#2a6b82; text-decoration:underline; font-weight:bold;">상세 정보 보기 ↗</a>
-            </div>`
+  function checkAllProcessed() {
+    processedCount++;
+    if (processedCount === validLocations.length) {
+      const validPath = positionsWithOrder.filter(p => p !== undefined);
+      if (validPath.length > 0) {
+        polyline = new kakao.maps.Polyline({ 
+          map: map, 
+          path: validPath, 
+          strokeWeight: 3, 
+          strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82', 
+          strokeOpacity: 0.7, 
+          strokeStyle: 'solid' 
         });
-        infowindows.push(infowindow);
-        
-        kakao.maps.event.addListener(marker, 'click', function() {
-          infowindows.forEach(iw => iw.close());
-          infowindow.open(map, marker);
-        });
-
-        markerMap[loc.id] = {
-          marker: marker,
-          infowindow: infowindow,
-          coords: coords
-        };
-
-        bounds.extend(coords);
       }
-      processedCount++;
-      if (processedCount === validLocations.length) {
-        const validPath = positionsWithOrder.filter(p => p !== undefined);
-        if (validPath.length > 0) {
-          polyline = new kakao.maps.Polyline({ 
-            map: map, 
-            path: validPath, 
-            strokeWeight: 3, 
-            strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82', 
-            strokeOpacity: 0.7, 
-            strokeStyle: 'solid' 
-          });
-        }
-        map.setBounds(bounds);
-        updateKakaoMapRedirectUrl(); // 초기 경계 설정 완료 후 핫링크 주소 업데이트
+      map.setBounds(bounds);
+      updateKakaoMapRedirectUrl();
+    }
+  }
+
+  function createMarkerAndInfoWindow(loc, index, coords, placeId) {
+    positionsWithOrder[index] = coords;
+    
+    const marker = new kakao.maps.Marker({ map: map, position: coords });
+    markers.push(marker);
+    
+    // 장소 고유 ID가 존재하면 고유 링크 매핑, 없을 경우 통합 검색 브릿지 링크 매핑
+    const kakaoPlaceUrl = placeId ? `https://place.map.kakao.com/${placeId}` : `https://map.kakao.com/link/search/${encodeURIComponent(loc.address)}`;
+    
+    const timelineLinkEl = document.getElementById(`link-${loc.id}`);
+    if(timelineLinkEl) timelineLinkEl.href = kakaoPlaceUrl;
+    
+    const infowindow = new kakao.maps.InfoWindow({ 
+      content: `
+        <div style="padding:8px 12px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center;">
+          <div style="margin-bottom:4px; white-space:nowrap;">${loc.title}</div>
+          <a href="${kakaoPlaceUrl}" target="_blank" style="font-size:10px; color:#2a6b82; text-decoration:underline; font-weight:bold;">상세 정보 보기 ↗</a>
+        </div>`
+    });
+    infowindows.push(infowindow);
+    
+    kakao.maps.event.addListener(marker, 'click', function() {
+      infowindows.forEach(iw => iw.close());
+      infowindow.open(map, marker);
+    });
+
+    markerMap[loc.id] = { marker: marker, infowindow: infowindow, coords: coords };
+    bounds.extend(coords);
+  }
+
+  validLocations.forEach((loc, index) => {
+    // 1단계: POI(장소명 키워드) 형태로 먼저 검색을 시도합니다.
+    placesService.keywordSearch(loc.address, function(result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        const poi = result[0];
+        const coords = new kakao.maps.LatLng(poi.y, poi.x);
+        createMarkerAndInfoWindow(loc, index, coords, poi.id);
+        checkAllProcessed();
+      } else {
+        // 2단계: 만약 POI 결과가 없다면 표준 도로명/지번 주소인지 geocoder 엔진으로 2차 조회합니다.
+        geocoder.addressSearch(loc.address, function(addrResult, addrStatus) {
+          if (addrStatus === kakao.maps.services.Status.OK) {
+            const coords = new kakao.maps.LatLng(addrResult[0].y, addrResult[0].x);
+            createMarkerAndInfoWindow(loc, index, coords, null);
+          } else {
+            console.warn(`검색 실패 (POI/주소 모두 없음): ${loc.address}`);
+          }
+          checkAllProcessed();
+        });
       }
     });
   });
@@ -453,11 +470,12 @@ function updateMapEngine() {
 window.addEventListener('load', () => {
   const container = document.getElementById('naverMap');
   map = new kakao.maps.Map(container, { center: new kakao.maps.LatLng(37.53, 129.13), level: 8 });
+  
+  // 두 가지 서비스 인스턴스를 모두 초기화하여 사용합니다.
+  placesService = new kakao.maps.services.Places();
   geocoder = new kakao.maps.services.Geocoder();
 
-  // 지도가 드래그되거나 확대/축소될 때마다 현재 중심 좌표 링크를 동적으로 연산하는 리스너 바인딩
   kakao.maps.event.addListener(map, 'idle', updateKakaoMapRedirectUrl);
-
   loadDataFromServer();
 });
 </script>
