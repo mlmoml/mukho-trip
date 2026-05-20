@@ -52,7 +52,6 @@ h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);li
 .timeline-items{position:relative;padding-left:24px;}
 .timeline-items::before{content:"";position:absolute;left:4px;top:8px;bottom:8px;width:1px;background:var(--border);}
 
-/* 일정 카드 클릭 유도를 위한 스타일 커스텀 */
 .item{position:relative;margin-bottom:28px;padding:8px;border-radius:6px;cursor:pointer;transition:background 0.2s ease;}
 .item:hover{background:var(--ocean-pale);}
 body.edit-mode .item{cursor:default;}
@@ -81,6 +80,11 @@ body.edit-mode .btn-delete:hover { color:var(--coral); }
 .item-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--coral);line-height:1;margin-bottom:4px;display:inline-block;}
 .item-title{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4;padding-right:30px;}
 .item-desc{font-size:13px;color:var(--muted);margin-top:4px;font-weight:300;line-height:1.5;}
+
+/* 카카오맵 상세 보기 링크용 버튼 스타일 추가 */
+.btn-map-link { display: inline-block; font-size: 11px; background: #fee500; color: #181c24; padding: 3px 8px; border-radius: 4px; font-weight: 500; margin-top: 6px; text-decoration: none; border: 1px solid #e1cb00; transition: background 0.2s; }
+.btn-map-link:hover { background: #fada00; }
+body.edit-mode .btn-map-link { display: none; }
 
 .item-tag-select { display:none; margin-top:6px; font-size:11px; padding:2px; border-radius:4px; background:var(--white); color:var(--ink); border:1px solid var(--border); }
 body.edit-mode .item-tag-select { display:inline-block; }
@@ -186,8 +190,6 @@ let map, geocoder, polyline;
 let markers = [];
 let infowindows = [];
 let isEditMode = false;
-
-// 각 장소 ID에 매핑될 마커와 인포윈도우 객체를 관리하기 위한 맵
 let markerMap = {};
 
 async function loadDataFromServer() {
@@ -246,6 +248,9 @@ function renderTimelineUI() {
   day2Container.innerHTML = '';
 
   initialTimelineData.forEach(item => {
+    // 카카오맵 공식 상세(검색) 페이지로 연동할 안전한 인코딩 URL 생성
+    const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(item.title)}`;
+
     const itemHTML = `
       <div class="item" data-id="${item.id}" onclick="focusMapLocation('${item.id}')">
         <div class="item-dot"></div>
@@ -254,7 +259,10 @@ function renderTimelineUI() {
         <div class="item-desc editable-field" contenteditable="${isEditMode}">${item.desc}</div>
         <button class="btn-delete" onclick="event.stopPropagation(); deleteItem('${item.id}')">삭제</button>
         <input type="text" class="address-field" placeholder="정확한 도로명 주소 입력" value="${item.address || ''}" onclick="event.stopPropagation();">
-        <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
+        <div>
+          <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
+          <a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" onclick="event.stopPropagation();">카카오맵 상세 보기 ↗</a>
+        </div>
         <select class="item-tag-select" onclick="event.stopPropagation();">
           <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
           <option value="spot" ${item.tag === 'spot' ? 'selected' : ''}>SPOT</option>
@@ -268,17 +276,12 @@ function renderTimelineUI() {
   });
 }
 
-// 왼쪽 리스트 클릭 시 지도를 장소로 포커스시키는 인터랙션 엔진 코드
 function focusMapLocation(itemId) {
-  if (isEditMode) return; // 편집 상태일 때는 조작 방해 방지를 위해 동작 제외
-  
+  if (isEditMode) return;
   const targetData = markerMap[itemId];
   if (!targetData) return;
 
-  // 모든 인포윈도우 일단 닫기
   infowindows.forEach(iw => iw.close());
-
-  // 해당 위치로 맵 부드럽게 화면 중심 이동 및 말풍선 열기
   map.panTo(targetData.coords);
   targetData.infowindow.open(map, targetData.marker);
 }
@@ -366,7 +369,7 @@ function updateMapEngine() {
   
   markers = []; 
   infowindows = [];
-  markerMap = {}; // 초기화
+  markerMap = {};
 
   const validLocations = initialTimelineData.filter(loc => loc.address && loc.address.trim() !== '');
   if (validLocations.length === 0) return;
@@ -384,18 +387,22 @@ function updateMapEngine() {
         const marker = new kakao.maps.Marker({ map: map, position: coords });
         markers.push(marker);
         
+        // 지도 오른쪽 말풍선 안에도 링크 버튼을 추가하여 동시 탐색 지원
+        const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(loc.title)}`;
         const infowindow = new kakao.maps.InfoWindow({ 
-          content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef;">${loc.title}</div>` 
+          content: `
+            <div style="padding:8px 12px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center;">
+              <div style="margin-bottom:4px;">${loc.title}</div>
+              <a href="${kakaoMapSearchUrl}" target="_blank" style="font-size:10px; color:#2a6b82; text-decoration:underline; font-weight:bold;">상세 정보 보기 ↗</a>
+            </div>`
         });
         infowindows.push(infowindow);
         
-        // 지도 상에서 마커 직접 클릭 시에도 고정 오픈되도록 맵핑
         kakao.maps.event.addListener(marker, 'click', function() {
           infowindows.forEach(iw => iw.close());
           infowindow.open(map, marker);
         });
 
-        // 타임라인 리스트 클릭 바인딩용 객체 데이터 저장
         markerMap[loc.id] = {
           marker: marker,
           infowindow: infowindow,
