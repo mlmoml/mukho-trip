@@ -83,7 +83,19 @@ body.edit-mode .btn-delete:hover { color:var(--coral); }
 
 .btn-map-link { display: inline-block; font-size: 11px; background: #fee500; color: #181c24; padding: 3px 8px; border-radius: 4px; font-weight: 500; margin-top: 6px; text-decoration: none; border: 1px solid #e1cb00; transition: background 0.2s; }
 .btn-map-link:hover { background: #fada00; }
+.btn-map-link + .btn-map-link { margin-left: 4px; }
+.btn-map-link.alt { background: var(--ocean-pale); color: var(--ocean-mid); border-color: var(--border); }
+.btn-map-link.alt:hover { background: var(--ocean-light); color: var(--white); }
 body.edit-mode .btn-map-link { display: none; }
+
+.map-controls { position:absolute; top:16px; left:16px; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:10px 12px; box-shadow:0 4px 16px rgba(26,37,48,0.08); backdrop-filter:blur(8px); z-index:20; display:flex; flex-direction:column; gap:6px; font-size:12px; transition:background 0.3s; }
+.map-controls-title { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--ocean-mid); font-weight:500; margin-bottom:2px; }
+.map-controls label { display:flex; align-items:center; gap:6px; color:var(--ink); cursor:pointer; user-select:none; font-size:12px; }
+.map-controls input[type="checkbox"] { accent-color:var(--ocean-mid); cursor:pointer; }
+.map-controls-divider { height:1px; background:var(--border); margin:4px 0; }
+.btn-skyview { background:var(--ocean-pale); border:1px solid var(--border); color:var(--ocean-mid); padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer; font-family:var(--sans); font-weight:500; transition:all 0.2s; }
+.btn-skyview:hover { background:var(--ocean-light); color:var(--white); }
+.btn-skyview.active { background:var(--coral); color:var(--white); border-color:var(--coral); }
 
 .item-tag-select { display:none; margin-top:6px; font-size:11px; padding:2px; border-radius:4px; background:var(--white); color:var(--ink); border:1px solid var(--border); }
 body.edit-mode .item-tag-select { display:inline-block; }
@@ -143,6 +155,17 @@ body.edit-mode .item-tag { display:none; }
 
   <div class="map-container">
     <div id="naverMap"></div>
+
+    <div class="map-controls">
+      <div class="map-controls-title">Map Layers</div>
+      <label><input type="checkbox" id="chkTraffic"> 실시간 교통정보</label>
+      <label><input type="checkbox" id="chkBicycle"> 자전거 도로</label>
+      <label><input type="checkbox" id="chkTerrain"> 지형도</label>
+      <label><input type="checkbox" id="chkRoadview"> 로드뷰 도로</label>
+      <div class="map-controls-divider"></div>
+      <button class="btn-skyview" id="btnSkyview" type="button">스카이뷰 전환</button>
+    </div>
+
     <div class="map-overlay-card">
       <div class="overlay-title editable-field" id="overlayTitle">동선 가이드</div>
       <div class="overlay-desc editable-field" id="overlayDesc">가이드 정보 로딩 중...</div>
@@ -247,9 +270,13 @@ function renderTimelineUI() {
   day2Container.innerHTML = '';
 
   initialTimelineData.forEach(item => {
-    // [변경 핵심] item.title 대신 item.address(주소값)를 인코딩하여 상세 정보 링크 생성
     const hasAddress = item.address && item.address.trim() !== '';
     const kakaoMapSearchUrl = hasAddress ? `https://map.kakao.com/link/search/${encodeURIComponent(item.address)}` : '#';
+    const cachedCoords = markerMap[item.id] ? markerMap[item.id].coords : null;
+    const lat = cachedCoords ? cachedCoords.getLat() : null;
+    const lng = cachedCoords ? cachedCoords.getLng() : null;
+    const kakaoRouteUrl = (lat && lng) ? `https://map.kakao.com/link/to/${encodeURIComponent(item.title)},${lat},${lng}` : null;
+    const kakaoRoadviewUrl = (lat && lng) ? `https://map.kakao.com/link/roadview/${lat},${lng}` : null;
 
     const itemHTML = `
       <div class="item" data-id="${item.id}" onclick="focusMapLocation('${item.id}')">
@@ -261,7 +288,9 @@ function renderTimelineUI() {
         <input type="text" class="address-field" placeholder="정확한 도로명 주소 입력" value="${item.address || ''}" onclick="event.stopPropagation();">
         <div>
           <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
-          ${hasAddress ? `<a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" onclick="event.stopPropagation();">카카오맵 상세 보기 ↗</a>` : ''}
+          ${hasAddress ? `<a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" onclick="event.stopPropagation();">상세 보기 ↗</a>` : ''}
+          ${kakaoRouteUrl ? `<a href="${kakaoRouteUrl}" target="_blank" class="btn-map-link alt" onclick="event.stopPropagation();">길찾기 ↗</a>` : ''}
+          ${kakaoRoadviewUrl ? `<a href="${kakaoRoadviewUrl}" target="_blank" class="btn-map-link alt" onclick="event.stopPropagation();">로드뷰 ↗</a>` : ''}
         </div>
         <select class="item-tag-select" onclick="event.stopPropagation();">
           <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
@@ -387,13 +416,20 @@ function updateMapEngine() {
         const marker = new kakao.maps.Marker({ map: map, position: coords });
         markers.push(marker);
         
-        // [변경 핵심] 지도 말풍선 내의 링크 주소도 item.address로 통일 처리
         const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(loc.address)}`;
-        const infowindow = new kakao.maps.InfoWindow({ 
+        const kakaoRouteUrl = `https://map.kakao.com/link/to/${encodeURIComponent(loc.title)},${result[0].y},${result[0].x}`;
+        const kakaoRoadviewUrl = `https://map.kakao.com/link/roadview/${result[0].y},${result[0].x}`;
+        const infowindow = new kakao.maps.InfoWindow({
+          removable: true,
           content: `
-            <div style="padding:8px 12px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center;">
-              <div style="margin-bottom:4px;">${loc.title}</div>
-              <a href="${kakaoMapSearchUrl}" target="_blank" style="font-size:10px; color:#2a6b82; text-decoration:underline; font-weight:bold;">상세 정보 보기 ↗</a>
+            <div style="padding:10px 14px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center; min-width:180px;">
+              <div style="margin-bottom:6px; font-weight:600;">${loc.title}</div>
+              <div style="font-size:10px; color:#6b7f8a; margin-bottom:8px; font-weight:400;">${loc.address}</div>
+              <div style="display:flex; gap:4px; justify-content:center; flex-wrap:wrap;">
+                <a href="${kakaoMapSearchUrl}" target="_blank" style="font-size:10px; color:#1a2530; background:#fee500; padding:3px 7px; border-radius:3px; text-decoration:none; font-weight:600;">상세 ↗</a>
+                <a href="${kakaoRouteUrl}" target="_blank" style="font-size:10px; color:#fff; background:#2a6b82; padding:3px 7px; border-radius:3px; text-decoration:none; font-weight:600;">길찾기 ↗</a>
+                <a href="${kakaoRoadviewUrl}" target="_blank" style="font-size:10px; color:#fff; background:#d4614a; padding:3px 7px; border-radius:3px; text-decoration:none; font-weight:600;">로드뷰 ↗</a>
+              </div>
             </div>`
         });
         infowindows.push(infowindow);
@@ -415,25 +451,62 @@ function updateMapEngine() {
       if (processedCount === validLocations.length) {
         const validPath = positionsWithOrder.filter(p => p !== undefined);
         if (validPath.length > 0) {
-          polyline = new kakao.maps.Polyline({ 
-            map: map, 
-            path: validPath, 
-            strokeWeight: 3, 
-            strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82', 
-            strokeOpacity: 0.7, 
-            strokeStyle: 'solid' 
+          polyline = new kakao.maps.Polyline({
+            map: map,
+            path: validPath,
+            strokeWeight: 3,
+            strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82',
+            strokeOpacity: 0.7,
+            strokeStyle: 'solid'
           });
         }
         map.setBounds(bounds);
+        if (!isEditMode) renderTimelineUI();
       }
     });
   });
 }
 
+function setupMapControls() {
+  const zoomControl = new kakao.maps.ZoomControl();
+  map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+  const mapTypeControl = new kakao.maps.MapTypeControl();
+  map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+  map.setKeyboardShortcuts(true);
+
+  const overlayTypes = {
+    chkTraffic: kakao.maps.MapTypeId.TRAFFIC,
+    chkBicycle: kakao.maps.MapTypeId.BICYCLE,
+    chkTerrain: kakao.maps.MapTypeId.TERRAIN,
+    chkRoadview: kakao.maps.MapTypeId.ROADVIEW
+  };
+
+  Object.entries(overlayTypes).forEach(([id, typeId]) => {
+    document.getElementById(id).addEventListener('change', (e) => {
+      if (e.target.checked) map.addOverlayMapTypeId(typeId);
+      else map.removeOverlayMapTypeId(typeId);
+    });
+  });
+
+  const skyviewBtn = document.getElementById('btnSkyview');
+  skyviewBtn.addEventListener('click', () => {
+    const isSkyview = skyviewBtn.classList.toggle('active');
+    map.setMapTypeId(isSkyview ? kakao.maps.MapTypeId.HYBRID : kakao.maps.MapTypeId.ROADMAP);
+    skyviewBtn.textContent = isSkyview ? '일반지도 전환' : '스카이뷰 전환';
+  });
+}
+
 window.addEventListener('load', () => {
   const container = document.getElementById('naverMap');
-  map = new kakao.maps.Map(container, { center: new kakao.maps.LatLng(37.53, 129.13), level: 8 });
+  map = new kakao.maps.Map(container, {
+    center: new kakao.maps.LatLng(37.53, 129.13),
+    level: 8,
+    mapTypeId: kakao.maps.MapTypeId.ROADMAP
+  });
   geocoder = new kakao.maps.services.Geocoder();
+  setupMapControls();
   loadDataFromServer();
 });
 </script>
