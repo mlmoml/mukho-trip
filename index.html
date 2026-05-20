@@ -13,18 +13,37 @@
   --sunrise:#f0a04a; --sunrise-light:#fde8ca;
   --ink:#1a2530; --muted:#6b7f8a; --border:#d6e8ef; --white:#fdfcfa;
   --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif; --mono:'DM Mono',monospace;
+  --card-bg:rgba(255,253,250,0.95);
+}
+/* 야간 모드 스타일 정의 */
+body.dark-mode {
+  --ocean:#b8d8e4; --ocean-mid:#4a8da8; --ocean-light:#1a4a5c; --ocean-pale:#102a35;
+  --sand:#1f1911; --sand-dark:#4a3b2c;
+  --coral:#f5cdc7; --coral-light:#d4614a;
+  --sunrise:#fde8ca; --sunrise-light:#f0a04a;
+  --ink:#fdfcfa; --muted:#a0b2bc; --border:#2a3f4d; --white:#121a21;
+  --card-bg:rgba(18,26,33,0.95);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--white);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6;}
+body{background:var(--white);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6;transition:background 0.3s, color 0.3s;}
 #app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:480px 1fr;height:100vh;overflow:hidden;position:relative;}
 @media(max-width:1024px){#app{grid-template-columns:1fr;grid-template-rows:auto 400px;height:auto;overflow:visible;}}
-.sidebar{background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto;position:relative;z-index:10;}
+.sidebar{background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto;position:relative;z-index:10;transition:background 0.3s, border-color 0.3s;}
 @media(max-width:1024px){.sidebar{height:auto;max-height:none;overflow-y:visible;}}
-.header{padding:40px 32px 32px 32px;border-bottom:1px solid var(--ocean-pale);background:linear-gradient(to bottom, var(--ocean-pale) 0%, var(--white) 100%);}
+.header{padding:40px 32px 32px 32px;border-bottom:1px solid var(--ocean-pale);background:linear-gradient(to bottom, var(--ocean-pale) 0%, var(--white) 100%);position:relative;}
 .header-meta{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--ocean-mid);margin-bottom:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
 .header-meta span::before{content:"•";margin-right:8px;color:var(--coral);}
 h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);line-height:1.25;letter-spacing:-0.5px;}
 .subtitle{font-size:14px;color:var(--muted);margin-top:8px;font-weight:300;}
+
+/* 상단 우측 야간모드 토글 버튼 */
+.theme-toggle {
+  position:absolute;top:40px;right:32px;background:var(--ocean-pale);border:1px solid var(--border);
+  color:var(--ocean-mid);padding:8px 12px;border-radius:20px;font-size:12px;cursor:pointer;
+  font-family:var(--sans);font-weight:500;transition:all 0.3s ease;
+}
+.theme-toggle:hover { background:var(--ocean-light); color:var(--white); }
+
 .timeline{padding:24px 32px 40px 32px;flex:1;}
 .day-section{margin-bottom:40px;position:relative;}
 .day-section:last-child{margin-bottom:0;}
@@ -36,7 +55,12 @@ h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);li
 .item:last-child{margin-bottom:0;}
 .item-dot{position:absolute;left:-24px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--white);border:2px solid var(--ocean-mid);transition:all 0.3s ease;z-index:2;}
 .item:hover .item-dot{background:var(--coral);border-color:var(--coral);transform:scale(1.2);}
-.item-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--coral);line-height:1;margin-bottom:4px;}
+
+/* 직접 수정(콘텐츠 에디터) 스타일 명시 */
+.item-time, .item-title, .item-desc { outline:none; transition:background 0.2s; border-radius:2px; }
+.item-time:focus, .item-title:focus, .item-desc:focus { background:var(--ocean-pale); box-shadow:0 0 0 3px var(--ocean-pale); }
+
+.item-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--coral);line-height:1;margin-bottom:4px;display:inline-block;}
 .item-title{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4;}
 .item-desc{font-size:13px;color:var(--muted);margin-top:4px;font-weight:300;line-height:1.5;}
 .item-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;margin-top:6px;text-transform:uppercase;letter-spacing:0.5px;}
@@ -46,7 +70,7 @@ h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);li
 .map-container{position:relative;width:100%;height:100%;background:var(--sand);}
 @media(max-width:1024px){.map-container{height:400px;}}
 #naverMap{width:100%;height:100%;}
-.map-overlay-card{position:absolute;bottom:24px;right:24px;background:rgba(255,253,250,0.95);padding:16px 20px;border-radius:8px;box-shadow:0 12px 32px rgba(26,37,48,0.08);backdrop-filter:blur(8px);border:1px solid rgba(214,232,239,0.5);z-index:20;max-width:320px;pointer-events:auto;}
+.map-overlay-card{position:absolute;bottom:24px;right:24px;background:var(--card-bg);padding:16px 20px;border-radius:8px;box-shadow:0 12px 32px rgba(26,37,48,0.08);backdrop-filter:blur(8px);border:1px solid rgba(214,232,239,0.5);z-index:20;max-width:320px;pointer-events:auto;transition:background 0.3s;}
 .overlay-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ocean);margin-bottom:4px;}
 .overlay-desc{font-size:12px;color:var(--muted);line-height:1.4;}
 ::-webkit-scrollbar{width:6px;}
@@ -61,72 +85,74 @@ h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);li
   <div class="sidebar">
     <div class="header">
       <div class="header-meta">1박 2일 여행<span>Mukho Trip</span></div>
-      <h1>푸른 바다와<br>유산의 도시, 동해</h1>
-      <div class="subtitle">묵호항 중심의 감성 여행 코스 가이드</div>
+      <h1 contenteditable="true">푸른 바다와<br>유산의 도시, 동해</h1>
+      <div class="subtitle" contenteditable="true">묵호항 중심의 감성 여행 코스 가이드</div>
+      <button class="theme-toggle" id="themeBtn">야간 모드</button>
     </div>
 
     <div class="timeline">
       <div class="day-section">
-        <div class="day-title">Day 01 <span class="date">바다와 감성의 시작</span></div>
+        <div class="day-title">Day 01 <span class="date" contenteditable="true">바다와 감성의 시작</span></div>
         <div class="timeline-items">
           <div class="item">
             <div class="item-dot"></div>
-            <div class="item-time">13:30</div>
-            <div class="item-title">묵호역 도착 및 이동</div>
-            <div class="item-desc">설레는 동해 여행의 시작점. 묵호역에서 나와 바다 내음을 마시며 여정을 시작합니다.</div>
+            <div class="item-time" contenteditable="true">13:30</div>
+            <div class="item-title" contenteditable="true">묵호역 도착 및 이동</div>
+            <div class="item-desc" contenteditable="true">설레는 동해 여행의 시작점. 묵호역에서 나와 바다 내음을 마시며 여정을 시작합니다.</div>
           </div>
-          <div class="item">
+          <div class="item" data-index="0">
             <div class="item-dot"></div>
-            <div class="item-time">14:00</div>
-            <div class="item-title">논골담길 산책</div>
-            <div class="item-desc">소박한 골목길 벽화와 주민들의 이야기가 담긴 감성 명소. 느린 걸음으로 걸어 올라갑니다.</div>
+            <div class="item-time" contenteditable="true">14:00</div>
+            <div class="item-title loc-title" contenteditable="true">논골담길 산책</div>
+            <div class="item-desc" contenteditable="true">소박한 골목길 벽화와 주민들의 이야기가 담긴 감성 명소. 느린 걸음으로 걸어 올라갑니다.</div>
             <span class="item-tag tag-spot">Spot</span>
           </div>
-          <div class="item">
+          <div class="item" data-index="1">
             <div class="item-dot"></div>
-            <div class="item-time">15:30</div>
-            <div class="item-title">묵호등대 & 도째비골 스카이밸리</div>
-            <div class="item-desc">동해바다가 한눈에 내려다보이는 시원한 전망과 짜릿한 스카이워크 체험을 동시에 즐깁니다.</div>
+            <div class="item-time" contenteditable="true">15:30</div>
+            <div class="item-title loc-title" contenteditable="true">묵호등대</div>
+            <div class="item-desc" contenteditable="true">동해바다가 한눈에 내려다보이는 시원한 전망과 짜릿한 스카이워크 체험을 동시에 즐깁니다.</div>
             <span class="item-tag tag-spot">Spot</span>
           </div>
-          <div class="item">
+          <div class="item" data-index="2">
             <div class="item-dot"></div>
-            <div class="item-time">17:00</div>
-            <div class="item-title">카라멜 스테이션 카페</div>
-            <div class="item-desc">독특한 인테리어와 시그니처 음료가 있는 힙한 감성 공간에서 잠시 휴식과 담소를 나눕니다.</div>
+            <div class="item-time" contenteditable="true">17:00</div>
+            <div class="item-title loc-title" contenteditable="true">카라멜스테이션</div>
+            <div class="item-desc" contenteditable="true">독특한 인테리어와 시그니처 음료가 있는 힙한 감성 공간에서 잠시 휴식과 담소를 나눕니다.</div>
             <span class="item-tag tag-food">Cafe</span>
           </div>
-          <div class="item">
+          <div class="item" data-index="3">
             <div class="item-dot"></div>
-            <div class="item-time">18:30</div>
-            <div class="item-title">삼척 준펜션 체크인 및 휴식</div>
-            <div class="item-desc">안락하고 깨끗한 숙소에서 여독을 풀고 맛있는 저녁 식사와 함께 하루를 마무리합니다.</div>
-            <span class="item-tag tag-stay">Stay</span>
+            <div class="item-time" contenteditable="true">18:30</div>
+            <div class="item-title loc-title" contenteditable="true">도째비골 스카이밸리</div>
+            <div class="item-desc" contenteditable="true">안락하고 깨끗한 숙소에서 여독을 풀고 맛있는 저녁 식사와 함께 하루를 마무리합니다.</div>
+            <span class="item-tag tag-spot">Spot</span>
           </div>
         </div>
       </div>
 
       <div class="day-section">
-        <div class="day-title">Day 02 <span class="date">자연의 신비와 여운</span></div>
+        <div class="day-title">Day 02 <span class="date" contenteditable="true">자연의 신비와 여운</span></div>
         <div class="timeline-items">
-          <div class="item">
+          <div class="item" data-index="4">
             <div class="item-dot"></div>
-            <div class="item-time">10:00</div>
-            <div class="item-title">숙소 체크아웃</div>
-            <div class="item-desc">정든 숙소를 정리하고 둘째 날의 새로운 여정을 향해 출발합니다.</div>
+            <div class="item-time" contenteditable="true">10:00</div>
+            <div class="item-title loc-title" contenteditable="true">삼척 준펜션</div>
+            <div class="item-desc" contenteditable="true">정든 숙소를 정리하고 둘째 날의 새로운 여정을 향해 출발합니다.</div>
+            <span class="item-tag tag-stay">Stay</span>
           </div>
-          <div class="item">
+          <div class="item" data-index="5">
             <div class="item-dot"></div>
-            <div class="item-time">10:30</div>
-            <div class="item-title">추암 촛대바위</div>
-            <div class="item-desc">동해의 보석, 애국가 첫 소절의 배경화면으로 유명한 신비로운 기암괴석과 출렁다리를 감상합니다.</div>
+            <div class="item-time" contenteditable="true">10:30</div>
+            <div class="item-title loc-title" contenteditable="true">추암 촛대바위</div>
+            <div class="item-desc" contenteditable="true">동해의 보석, 애국가 첫 소절의 배경화면으로 유명한 신비로운 기암괴석과 출렁다리를 감상합니다.</div>
             <span class="item-tag tag-spot">Spot</span>
           </div>
           <div class="item">
             <div class="item-dot"></div>
-            <div class="item-time">13:00</div>
-            <div class="item-title">묵호역 복귀 및 해산</div>
-            <div class="item-desc">즐거웠던 기억을 안고 다시 묵호역으로 돌아와 여정을 마무리합니다. 다음에 또 만나요!</div>
+            <div class="item-time" contenteditable="true">13:00</div>
+            <div class="item-title" contenteditable="true">묵호역 복귀 및 해산</div>
+            <div class="item-desc" contenteditable="true">즐거웠던 기억을 안고 다시 묵호역으로 돌아와 여정을 마무리합니다. 다음에 또 만나요!</div>
           </div>
         </div>
       </div>
@@ -136,17 +162,17 @@ h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);li
   <div class="map-container">
     <div id="naverMap"></div>
     <div class="map-overlay-card">
-      <div class="overlay-title">동선 가이드</div>
-      <div class="overlay-desc">묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.</div>
+      <div class="overlay-title" contenteditable="true">동선 가이드</div>
+      <div class="overlay-desc" contenteditable="true">묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.</div>
     </div>
   </div>
 </div>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=554f46e78eae0af969d1c18e06539ce3&libraries=services"></script>
 <script>
-// 카카오맵 서비스에 등록할 정확한 도로명 주소 데이터 리스트
+// 카카오 주소-좌표 고정밀 딕셔너리
 const mapLocations = [
-  { title: '논골담길', address: '강원특별자치도 동해시 논골1길 2' },
+  { title: '논골담길 산책', address: '강원특별자치도 동해시 논골1길 2' },
   { title: '묵호등대', address: '강원특별자치도 동해시 등대오름길 34' },
   { title: '카라멜스테이션', address: '강원특별자치도 동해시 발한로 219-11' },
   { title: '도째비골 스카이밸리', address: '강원특별자치도 동해시 등대오름길 43-1' },
@@ -154,36 +180,40 @@ const mapLocations = [
   { title: '추암 촛대바위', address: '강원특별자치도 동해시 촛대바위길 28' }
 ];
 
-window.addEventListener('load', () => {
-  // 카카오맵 라이브러리 로드 여부 확인
-  if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) {
-    console.error("카카오맵 API 또는 서비스 라이브러리가 로드되지 않았습니다.");
-    return;
+let map, geocoder, polyline;
+let markers = [];
+let infowindows = [];
+
+// 1. 야간 모드 토글 기능 복구
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+  if(document.body.classList.contains('dark-mode')) {
+    themeBtn.textContent = '주간 모드';
+  } else {
+    themeBtn.textContent = '야간 모드';
   }
+});
 
-  const container = document.getElementById('naverMap');
-  const map = new kakao.maps.Map(container, {
-    center: new kakao.maps.LatLng(37.53, 129.13), // 초기 임시 중심점
-    level: 8
-  });
+// 2. 주소 기반 카카오 지도 렌더링 엔진
+function renderMap() {
+  if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) return;
 
-  // 주소-좌표 변환을 위한 Geocoder 객체 생성
-  const geocoder = new kakao.maps.services.Geocoder();
-  
-  // 모든 마커를 지도 화면 안에 한눈에 담기 위한 범위 재설정 객체
+  // 기존 마커 및 라인 지우기 초기화
+  markers.forEach(m => m.setMap(null));
+  infowindows.forEach(i => i.close());
+  if (polyline) polyline.setMap(null);
+  markers = [];
+  infowindows = [];
+
   const bounds = new kakao.maps.LatLngBounds();
-  
-  // 비동기 주소 검색 결과들을 순서대로 추적하여 라인을 그리기 위한 배열 관리
   const positionsWithOrder = new Array(mapLocations.length);
   let processedCount = 0;
 
   mapLocations.forEach((loc, index) => {
-    // 텍스트 주소로 정확한 위/경도 좌표를 검색합니다
     geocoder.addressSearch(loc.address, function(result, status) {
       if (status === kakao.maps.services.Status.OK) {
         const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-        
-        // 정해진 인덱스 자리에 좌표 저장 (동선 라인 연결용)
         positionsWithOrder[index] = coords;
 
         // 마커 생성
@@ -191,13 +221,15 @@ window.addEventListener('load', () => {
           map: map,
           position: coords
         });
+        markers.push(marker);
 
-        // 마커 말풍선(인포윈도우) 생성
+        // 마커 말풍선 컨텐츠 생성
         const infowindow = new kakao.maps.InfoWindow({
-          content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:var(--ink); border-radius:4px;">${loc.title}</div>`
+          content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:#1a2530; border-radius:4px; border:none; background:#fff;">${loc.title}</div>`
         });
+        infowindows.push(infowindow);
 
-        // 마커에 마우스오버/아웃 이벤트 등록
+        // 마우스 호버 바인딩
         kakao.maps.event.addListener(marker, 'mouseover', function() {
           infowindow.open(map, marker);
         });
@@ -205,30 +237,60 @@ window.addEventListener('load', () => {
           infowindow.close();
         });
 
-        // 지도의 영역 확장을 위해 좌표 정보 누적
         bounds.extend(coords);
-      } else {
-        console.warn(`주소를 찾지 못했습니다: ${loc.title} (${loc.address})`);
       }
 
-      // 비동기 처리가 모두 완료되었는지 확인
       processedCount++;
       if (processedCount === mapLocations.length) {
-        // 1. 유효한 좌표들만 필터링해서 여행 동선 라인(Polyline) 생성
+        // 라인(Polyline) 연동 그리기
         const validPath = positionsWithOrder.filter(p => p !== undefined);
         if (validPath.length > 0) {
-          const polyline = new kakao.maps.Polyline({
+          polyline = new kakao.maps.Polyline({
             map: map,
             path: validPath,
             strokeWeight: 3,
-            strokeColor: '#2a6b82', // --ocean-mid 색상 계열
+            strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82',
             strokeOpacity: 0.7,
             strokeStyle: 'solid'
           });
         }
-        
-        // 2. 모든 마커가 화면에 다 나오도록 지도의 중심점과 레벨 자동 조정
+        // 화면 중심 및 바운드 맞춤 자동 조절
         map.setBounds(bounds);
+      }
+    });
+  });
+}
+
+window.addEventListener('load', () => {
+  const container = document.getElementById('naverMap');
+  map = new kakao.maps.Map(container, {
+    center: new kakao.maps.LatLng(37.53, 129.13),
+    level: 8
+  });
+  geocoder = new kakao.maps.services.Geocoder();
+
+  // 초기 지도 그리기 실행
+  renderMap();
+
+  // 3. 실시간 텍스트 직접 수정 감지 및 지도 명칭 동기화 시스템
+  document.querySelectorAll('.loc-title').forEach(element => {
+    element.addEventListener('blur', (e) => {
+      const itemEl = e.target.closest('.item');
+      if (itemEl) {
+        const index = parseInt(itemEl.getAttribute('data-index'));
+        const newTitle = e.target.innerText.trim();
+        if(mapLocations[index]) {
+          // 수정한 장소명 데이터에 적용 후 지도 실시간 리프레시
+          mapLocations[index].title = newTitle;
+          renderMap();
+        }
+      }
+    });
+    // 엔터키 입력 시 수정 완료 처리(포커스 해제)
+    element.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.target.blur();
       }
     });
   });
