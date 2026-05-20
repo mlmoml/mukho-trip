@@ -51,13 +51,18 @@ h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);li
 .day-title .date{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400;}
 .timeline-items{position:relative;padding-left:24px;}
 .timeline-items::before{content:"";position:absolute;left:4px;top:8px;bottom:8px;width:1px;background:var(--border);}
-.item{position:relative;margin-bottom:28px;}
-.item:last-child{margin-bottom:0;}
-.item-dot{position:absolute;left:-24px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--white);border:2px solid var(--ocean-mid);transition:all 0.3s ease;z-index:2;}
+
+/* 일정 카드 클릭 유도를 위한 스타일 커스텀 */
+.item{position:relative;margin-bottom:28px;padding:8px;border-radius:6px;cursor:pointer;transition:background 0.2s ease;}
+.item:hover{background:var(--ocean-pale);}
+body.edit-mode .item{cursor:default;}
+body.edit-mode .item:hover{background:transparent;}
+
+.item-dot{position:absolute;left:-24px;top:14px;width:9px;height:9px;border-radius:50%;background:var(--white);border:2px solid var(--ocean-mid);transition:all 0.3s ease;z-index:2;}
 .item:hover .item-dot{background:var(--coral);border-color:var(--coral);transform:scale(1.2);}
 
 .editable-field { border-radius:3px; transition:all 0.2s; }
-body.edit-mode .editable-field { background:var(--ocean-pale); box-shadow:0 0 0 2px var(--ocean-pale); min-height:1.2em; }
+body.edit-mode .editable-field { background:var(--white); box-shadow:0 0 0 2px var(--border); min-height:1.2em; }
 body.edit-mode .editable-field:focus { background:var(--white); box-shadow:0 0 0 2px var(--coral); color:var(--ink); outline:none; }
 
 .address-field { display:none; font-size:11px; color:var(--ocean-mid); margin-top:4px; font-family:var(--sans); width:100%; border:none; background:transparent; }
@@ -69,7 +74,7 @@ body.edit-mode .add-item-container { display:block; }
 .btn-add { background:transparent; border:1px dashed var(--ocean-mid); color:var(--ocean-mid); padding:8px; width:100%; border-radius:6px; font-size:13px; cursor:pointer; font-weight:500; }
 .btn-add:hover { background:var(--ocean-pale); }
 
-.btn-delete { display:none; position:absolute; top:4px; right:0; background:transparent; border:none; color:var(--muted); font-size:11px; cursor:pointer; }
+.btn-delete { display:none; position:absolute; top:12px; right:8px; background:transparent; border:none; color:var(--muted); font-size:11px; cursor:pointer; }
 body.edit-mode .btn-delete { display:block; }
 body.edit-mode .btn-delete:hover { color:var(--coral); }
 
@@ -145,10 +150,9 @@ body.edit-mode .item-tag { display:none; }
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=554f46e78eae0af969d1c18e06539ce3&libraries=services"></script>
 
 <script>
-// ★ 3단계: 전달해주신 고유 주소를 반영했습니다! 끝에 경로용 json 파일명 명시 완료
 const DB_URL = "https://mukho-trip-default-rtdb.firebaseio.com/tripData.json";
+const EDIT_PASSWORD = "813815";
 
-// 기본 상단 텍스트 정보
 const defaultMeta = {
   mainTitle: '푸른 바다와<br>유산의 도시, 동해',
   mainSubtitle: '묵호항 중심의 감성 여행 코스 가이드',
@@ -158,7 +162,6 @@ const defaultMeta = {
   overlayDesc: '묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.'
 };
 
-// 수정하신 최신 일정 데이터셋
 const defaultSchedule = [
   { "id": "item1", "day": "day1", "time": "06:30", "title": "금강마을에서 출발", "desc": "약 230km, 3시간 예상 중간 여주휴게소 들를 예정", "tag": "none", "address": "경기도 부천시 원미구 계남로 106" },
   { "id": "item2", "day": "day1", "time": "08:00", "title": "여주휴게소 도착", "desc": "출발 약 1시간 30분 지점, 간단히 아침 먹거나 화장실 갔다오기~!", "tag": "spot", "address": "경기도 여주시 가남읍 여주남로 722" },
@@ -184,7 +187,9 @@ let markers = [];
 let infowindows = [];
 let isEditMode = false;
 
-// 서버에서 데이터 자동 받아오기
+// 각 장소 ID에 매핑될 마커와 인포윈도우 객체를 관리하기 위한 맵
+let markerMap = {};
+
 async function loadDataFromServer() {
   try {
     const response = await fetch(DB_URL);
@@ -201,7 +206,7 @@ async function loadDataFromServer() {
     renderTimelineUI();
     updateMapEngine();
   } catch (error) {
-    console.error("서버 연결 안 됨, 로컬 데이터 대체:", error);
+    console.error("서버 연결 실패, 기본 데이터 로드:", error);
     textMetaData = defaultMeta;
     initialTimelineData = defaultSchedule;
     renderTextMetaUI();
@@ -210,7 +215,6 @@ async function loadDataFromServer() {
   }
 }
 
-// 서버에 데이터 업데이트 전송하기
 async function saveDataToServer() {
   try {
     await fetch(DB_URL, {
@@ -220,9 +224,9 @@ async function saveDataToServer() {
         schedule: initialTimelineData
       })
     });
-    alert("내 Firebase 원격 서버 동기화 완료! 링크를 연 모든 일행의 화면이 동시 업데이트됩니다.");
+    alert("공용 데이터베이스 동기화 완료! 링크를 연 모든 일행의 화면이 업데이트되었습니다.");
   } catch (error) {
-    alert("Firebase 데이터베이스 통신 오류가 발생했습니다.");
+    alert("데이터베이스 저장 처리에 실패했습니다.");
   }
 }
 
@@ -243,15 +247,15 @@ function renderTimelineUI() {
 
   initialTimelineData.forEach(item => {
     const itemHTML = `
-      <div class="item" data-id="${item.id}">
+      <div class="item" data-id="${item.id}" onclick="focusMapLocation('${item.id}')">
         <div class="item-dot"></div>
         <div class="item-time editable-field" contenteditable="${isEditMode}">${item.time}</div>
         <div class="item-title editable-field" contenteditable="${isEditMode}">${item.title}</div>
         <div class="item-desc editable-field" contenteditable="${isEditMode}">${item.desc}</div>
-        <button class="btn-delete" onclick="deleteItem('${item.id}')">삭제</button>
-        <input type="text" class="address-field" placeholder="정확한 도로명 주소 입력" value="${item.address || ''}">
+        <button class="btn-delete" onclick="event.stopPropagation(); deleteItem('${item.id}')">삭제</button>
+        <input type="text" class="address-field" placeholder="정확한 도로명 주소 입력" value="${item.address || ''}" onclick="event.stopPropagation();">
         <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
-        <select class="item-tag-select">
+        <select class="item-tag-select" onclick="event.stopPropagation();">
           <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
           <option value="spot" ${item.tag === 'spot' ? 'selected' : ''}>SPOT</option>
           <option value="food" ${item.tag === 'food' ? 'selected' : ''}>CAFE/FOOD</option>
@@ -262,6 +266,21 @@ function renderTimelineUI() {
     if (item.day === 'day1') day1Container.insertAdjacentHTML('beforeend', itemHTML);
     else day2Container.insertAdjacentHTML('beforeend', itemHTML);
   });
+}
+
+// 왼쪽 리스트 클릭 시 지도를 장소로 포커스시키는 인터랙션 엔진 코드
+function focusMapLocation(itemId) {
+  if (isEditMode) return; // 편집 상태일 때는 조작 방해 방지를 위해 동작 제외
+  
+  const targetData = markerMap[itemId];
+  if (!targetData) return;
+
+  // 모든 인포윈도우 일단 닫기
+  infowindows.forEach(iw => iw.close());
+
+  // 해당 위치로 맵 부드럽게 화면 중심 이동 및 말풍선 열기
+  map.panTo(targetData.coords);
+  targetData.infowindow.open(map, targetData.marker);
 }
 
 function addNewItem(day) {
@@ -277,6 +296,14 @@ function deleteItem(id) {
 
 const editBtn = document.getElementById('editBtn');
 editBtn.addEventListener('click', async () => {
+  if (!isEditMode) {
+    const userInput = prompt("편집을 시작하려면 암호를 입력해 주세요:");
+    if (userInput !== EDIT_PASSWORD) {
+      alert("암호가 일치하지 않아 편집 모드를 활성화할 수 없습니다.");
+      return;
+    }
+  }
+
   isEditMode = !isEditMode;
   
   if (isEditMode) {
@@ -320,7 +347,6 @@ editBtn.addEventListener('click', async () => {
     renderTimelineUI();
     updateMapEngine();
 
-    // 동기화 실행
     await saveDataToServer();
   }
 });
@@ -337,7 +363,10 @@ function updateMapEngine() {
   markers.forEach(m => m.setMap(null));
   infowindows.forEach(i => i.close());
   if (polyline) polyline.setMap(null);
-  markers = []; infowindows = [];
+  
+  markers = []; 
+  infowindows = [];
+  markerMap = {}; // 초기화
 
   const validLocations = initialTimelineData.filter(loc => loc.address && loc.address.trim() !== '');
   if (validLocations.length === 0) return;
@@ -351,19 +380,42 @@ function updateMapEngine() {
       if (status === kakao.maps.services.Status.OK) {
         const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
         positionsWithOrder[index] = coords;
+        
         const marker = new kakao.maps.Marker({ map: map, position: coords });
         markers.push(marker);
-        const infowindow = new kakao.maps.InfoWindow({ content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px;">${loc.title}</div>` });
+        
+        const infowindow = new kakao.maps.InfoWindow({ 
+          content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef;">${loc.title}</div>` 
+        });
         infowindows.push(infowindow);
-        kakao.maps.event.addListener(marker, 'mouseover', function() { infowindow.open(map, marker); });
-        kakao.maps.event.addListener(marker, 'mouseout', function() { infowindow.close(); });
+        
+        // 지도 상에서 마커 직접 클릭 시에도 고정 오픈되도록 맵핑
+        kakao.maps.event.addListener(marker, 'click', function() {
+          infowindows.forEach(iw => iw.close());
+          infowindow.open(map, marker);
+        });
+
+        // 타임라인 리스트 클릭 바인딩용 객체 데이터 저장
+        markerMap[loc.id] = {
+          marker: marker,
+          infowindow: infowindow,
+          coords: coords
+        };
+
         bounds.extend(coords);
       }
       processedCount++;
       if (processedCount === validLocations.length) {
         const validPath = positionsWithOrder.filter(p => p !== undefined);
         if (validPath.length > 0) {
-          polyline = new kakao.maps.Polyline({ map: map, path: validPath, strokeWeight: 3, strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82', strokeOpacity: 0.7, strokeStyle: 'solid' });
+          polyline = new kakao.maps.Polyline({ 
+            map: map, 
+            path: validPath, 
+            strokeWeight: 3, 
+            strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82', 
+            strokeOpacity: 0.7, 
+            strokeStyle: 'solid' 
+          });
         }
         map.setBounds(bounds);
       }
