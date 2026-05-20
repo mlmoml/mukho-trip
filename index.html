@@ -81,7 +81,6 @@ body.edit-mode .btn-delete:hover { color:var(--coral); }
 .item-title{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4;padding-right:30px;}
 .item-desc{font-size:13px;color:var(--muted);margin-top:4px;font-weight:300;line-height:1.5;}
 
-/* 카카오맵 상세 보기 링크용 버튼 스타일 추가 */
 .btn-map-link { display: inline-block; font-size: 11px; background: #fee500; color: #181c24; padding: 3px 8px; border-radius: 4px; font-weight: 500; margin-top: 6px; text-decoration: none; border: 1px solid #e1cb00; transition: background 0.2s; }
 .btn-map-link:hover { background: #fada00; }
 body.edit-mode .btn-map-link { display: none; }
@@ -248,8 +247,9 @@ function renderTimelineUI() {
   day2Container.innerHTML = '';
 
   initialTimelineData.forEach(item => {
-    // 카카오맵 공식 상세(검색) 페이지로 연동할 안전한 인코딩 URL 생성
-    const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(item.title)}`;
+    // [변경 핵심] item.title 대신 item.address(주소값)를 인코딩하여 상세 정보 링크 생성
+    const hasAddress = item.address && item.address.trim() !== '';
+    const kakaoMapSearchUrl = hasAddress ? `https://map.kakao.com/link/search/${encodeURIComponent(item.address)}` : '#';
 
     const itemHTML = `
       <div class="item" data-id="${item.id}" onclick="focusMapLocation('${item.id}')">
@@ -261,7 +261,7 @@ function renderTimelineUI() {
         <input type="text" class="address-field" placeholder="정확한 도로명 주소 입력" value="${item.address || ''}" onclick="event.stopPropagation();">
         <div>
           <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
-          <a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" onclick="event.stopPropagation();">카카오맵 상세 보기 ↗</a>
+          ${hasAddress ? `<a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" onclick="event.stopPropagation();">카카오맵 상세 보기 ↗</a>` : ''}
         </div>
         <select class="item-tag-select" onclick="event.stopPropagation();">
           <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
@@ -387,8 +387,8 @@ function updateMapEngine() {
         const marker = new kakao.maps.Marker({ map: map, position: coords });
         markers.push(marker);
         
-        // 지도 오른쪽 말풍선 안에도 링크 버튼을 추가하여 동시 탐색 지원
-        const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(loc.title)}`;
+        // [변경 핵심] 지도 말풍선 내의 링크 주소도 item.address로 통일 처리
+        const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(loc.address)}`;
         const infowindow = new kakao.maps.InfoWindow({ 
           content: `
             <div style="padding:8px 12px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center;">
