@@ -13,37 +13,18 @@
   --sunrise:#f0a04a; --sunrise-light:#fde8ca;
   --ink:#1a2530; --muted:#6b7f8a; --border:#d6e8ef; --white:#fdfcfa;
   --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif; --mono:'DM Mono',monospace;
-  --card-bg:rgba(255,253,250,0.95);
-}
-body.dark-mode {
-  --ocean:#b8d8e4; --ocean-mid:#4a8da8; --ocean-light:#1a4a5c; --ocean-pale:#102a35;
-  --sand:#1f1911; --sand-dark:#4a3b2c;
-  --coral:#f5cdc7; --coral-light:#d4614a;
-  --sunrise:#fde8ca; --sunrise-light:#f0a04a;
-  --ink:#fdfcfa; --muted:#a0b2bc; --border:#2a3f4d; --white:#121a21;
-  --card-bg:rgba(18,26,33,0.95);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--white);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6;transition:background 0.3s, color 0.3s;}
+body{background:var(--white);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6;}
 #app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:480px 1fr;height:100vh;overflow:hidden;position:relative;}
 @media(max-width:1024px){#app{grid-template-columns:1fr;grid-template-rows:auto 400px;height:auto;overflow:visible;}}
-.sidebar{background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto;position:relative;z-index:10;transition:background 0.3s, border-color 0.3s;}
+.sidebar{background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto;position:relative;z-index:10;}
 @media(max-width:1024px){.sidebar{height:auto;max-height:none;overflow-y:visible;}}
-.header{padding:40px 32px 32px 32px;border-bottom:1px solid var(--ocean-pale);background:linear-gradient(to bottom, var(--ocean-pale) 0%, var(--white) 100%);position:relative;}
+.header{padding:40px 32px 32px 32px;border-bottom:1px solid var(--ocean-pale);background:linear-gradient(to bottom, var(--ocean-pale) 0%, var(--white) 100%);}
 .header-meta{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--ocean-mid);margin-bottom:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
 .header-meta span::before{content:"•";margin-right:8px;color:var(--coral);}
 h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);line-height:1.25;letter-spacing:-0.5px;}
 .subtitle{font-size:14px;color:var(--muted);margin-top:8px;font-weight:300;}
-
-.header-controls { position:absolute; top:40px; right:32px; display:flex; gap:8px; }
-.btn-control {
-  background:var(--ocean-pale); border:1px solid var(--border); color:var(--ocean-mid); 
-  padding:8px 14px; border-radius:20px; font-size:12px; cursor:pointer; font-family:var(--sans); 
-  font-weight:500; transition:all 0.2s ease; display:flex; align-items:center; gap:4px;
-}
-.btn-control:hover { background:var(--ocean-light); color:var(--white); }
-#editBtn.editing { background:var(--coral); color:var(--white); border-color:var(--coral); }
-
 .timeline{padding:24px 32px 40px 32px;flex:1;}
 .day-section{margin-bottom:40px;position:relative;}
 .day-section:last-child{margin-bottom:0;}
@@ -51,70 +32,43 @@ h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);li
 .day-title .date{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400;}
 .timeline-items{position:relative;padding-left:24px;}
 .timeline-items::before{content:"";position:absolute;left:4px;top:8px;bottom:8px;width:1px;background:var(--border);}
-
-.item{position:relative;margin-bottom:28px;padding:8px;border-radius:6px;cursor:pointer;transition:background 0.2s ease;}
-.item:hover{background:var(--ocean-pale);}
-body.edit-mode .item{cursor:default;}
-body.edit-mode .item:hover{background:transparent;}
-
-.item-dot{position:absolute;left:-24px;top:14px;width:9px;height:9px;border-radius:50%;background:var(--white);border:2px solid var(--ocean-mid);transition:all 0.3s ease;z-index:2;}
+.item{position:relative;margin-bottom:28px;}
+.item:last-child{margin-bottom:0;}
+.item-dot{position:absolute;left:-24px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--white);border:2px solid var(--ocean-mid);transition:all 0.3s ease;z-index:2;}
 .item:hover .item-dot{background:var(--coral);border-color:var(--coral);transform:scale(1.2);}
-
-.editable-field { border-radius:3px; transition:all 0.2s; }
-body.edit-mode .editable-field { background:var(--white); box-shadow:0 0 0 2px var(--border); min-height:1.2em; }
-body.edit-mode .editable-field:focus { background:var(--white); box-shadow:0 0 0 2px var(--coral); color:var(--ink); outline:none; }
-
-.address-field { display:none; font-size:11px; color:var(--ocean-mid); margin-top:4px; font-family:var(--sans); width:100%; border:none; background:transparent; }
-body.edit-mode .address-field { display:block; border-bottom:1px dashed var(--border); padding:2px 0; }
-body.edit-mode .address-field:focus { outline:none; border-bottom-color:var(--coral); }
-
-.add-item-container { display:none; margin-top:16px; padding-left:24px; }
-body.edit-mode .add-item-container { display:block; }
-.btn-add { background:transparent; border:1px dashed var(--ocean-mid); color:var(--ocean-mid); padding:8px; width:100%; border-radius:6px; font-size:13px; cursor:pointer; font-weight:500; }
-.btn-add:hover { background:var(--ocean-pale); }
-
-.btn-delete { display:none; position:absolute; top:12px; right:8px; background:transparent; border:none; color:var(--muted); font-size:11px; cursor:pointer; }
-body.edit-mode .btn-delete { display:block; }
-body.edit-mode .btn-delete:hover { color:var(--coral); }
-
-.item-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--coral);line-height:1;margin-bottom:4px;display:inline-block;}
-.item-title{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4;padding-right:30px;}
+.item-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--coral);line-height:1;margin-bottom:4px;}
+.item-title{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4;}
 .item-desc{font-size:13px;color:var(--muted);margin-top:4px;font-weight:300;line-height:1.5;}
-
-.btn-map-link { display: inline-block; font-size: 11px; background: #fee500; color: #181c24; padding: 3px 8px; border-radius: 4px; font-weight: 500; margin-top: 6px; text-decoration: none; border: 1px solid #e1cb00; transition: background 0.2s; }
-.btn-map-link:hover { background: #fada00; }
-body.edit-mode .btn-map-link { display: none; }
-
-.item-tag-select { display:none; margin-top:6px; font-size:11px; padding:2px; border-radius:4px; background:var(--white); color:var(--ink); border:1px solid var(--border); }
-body.edit-mode .item-tag-select { display:inline-block; }
-body.edit-mode .item-tag { display:none; }
-
 .item-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;margin-top:6px;text-transform:uppercase;letter-spacing:0.5px;}
 .tag-food{background:var(--sunrise-light);color:var(--sunrise);}
 .tag-stay{background:var(--coral-light);color:var(--coral);}
 .tag-spot{background:var(--ocean-pale);color:var(--ocean-mid);}
-.tag-none{display:none;}
-
 .map-container{position:relative;width:100%;height:100%;background:var(--sand);}
 @media(max-width:1024px){.map-container{height:400px;}}
 #naverMap{width:100%;height:100%;}
-
-.kakao-redirect-btn {
-  position: absolute; top: 16px; left: 16px; z-index: 30;
-  background: #fee500; color: #181c24; font-family: var(--sans); font-size: 12px; font-weight: 600;
-  padding: 10px 16px; border-radius: 8px; border: 1px solid #e1cb00; text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s ease; display: flex; align-items: center; gap: 4px;
-}
-.kakao-redirect-btn:hover { background: #fada00; transform: translateY(-1px); }
-body.edit-mode .kakao-redirect-btn { display: none; }
-
-.map-overlay-card{position:absolute;bottom:24px;right:24px;background:var(--card-bg);padding:16px 20px;border-radius:8px;box-shadow:0 12px 32px rgba(26,37,48,0.08);backdrop-filter:blur(8px);border:1px solid rgba(214,232,239,0.5);z-index:20;max-width:320px;pointer-events:auto;transition:background 0.3s;}
+.map-overlay-card{position:absolute;bottom:24px;right:24px;background:rgba(255,253,250,0.95);padding:16px 20px;border-radius:8px;box-shadow:0 12px 32px rgba(26,37,48,0.08);backdrop-filter:blur(8px);border:1px solid rgba(214,232,239,0.5);z-index:20;max-width:320px;pointer-events:auto;}
 .overlay-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ocean);margin-bottom:4px;}
 .overlay-desc{font-size:12px;color:var(--muted);line-height:1.4;}
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--ocean-pale);border-radius:3px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--border);}
+
+/* ── 순정 Infowindow 내부 디자인용 가벼운 CSS 스타일 추가 ── */
+.info-window-content {
+  padding: 12px; width: 280px; font-family: 'Noto Sans KR', sans-serif; color: #333; line-height: 1.4;
+}
+.info-title-wrap { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.info-title { font-size: 15px; font-weight: bold; color: #1e1e1e; text-decoration: none; }
+.info-title:hover { text-decoration: underline; }
+.info-rating { font-size: 12px; color: #f0a04a; margin-bottom: 8px; font-weight: 500; }
+.info-reviews { color: #888; font-weight: normal; margin-left: 4px; text-decoration: none; }
+.info-reviews:hover { text-decoration: underline; }
+.info-address { font-size: 12px; color: #555; margin-bottom: 2px; word-break: keep-all; }
+.info-phone { font-size: 12px; color: #2ba638; font-weight: 500; margin-bottom: 8px; }
+.info-links { border-top: 1px solid #eaeaea; padding-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+.info-link-btn { font-size: 12px; color: #2a6b82; text-decoration: none; font-weight: 500; }
+.info-link-btn:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -123,360 +77,114 @@ body.edit-mode .kakao-redirect-btn { display: none; }
   <div class="sidebar">
     <div class="header">
       <div class="header-meta">1박 2일 여행<span>Mukho Trip</span></div>
-      <h1 class="editable-field" id="mainTitle">로딩 중...</h1>
-      <div class="subtitle editable-field" id="mainSubtitle">데이터를 불러오는 중입니다.</div>
-      
-      <div class="header-controls">
-        <button class="btn-control" id="editBtn">편집 모드</button>
-        <button class="btn-control" id="themeBtn">야간 모드</button>
-      </div>
+      <h1>푸른 바다와<br>유산의 도시, 동해</h1>
+      <div class="subtitle">묵호항 중심의 감성 여행 코스 가이드</div>
     </div>
 
     <div class="timeline">
-      <div class="day-section" id="day1Section">
-        <div class="day-title">Day 01 <span class="date editable-field" id="day1Title">바다와 감성의 시작</span></div>
-        <div class="timeline-items" id="day1Items"></div>
-        <div class="add-item-container">
-          <button class="btn-add" onclick="addNewItem('day1')">+ 새로운 일정 추가 (Day 1)</button>
+      <div class="day-section">
+        <div class="day-title">Day 01 <span class="date">바다와 감성의 시작</span></div>
+        <div class="timeline-items">
+          <div class="item"><div class="item-dot"></div><div class="item-time">13:30</div><div class="item-title">묵호역 도착 및 이동</div><div class="item-desc">설레는 동해 여행의 시작점.</div></div>
+          <div class="item"><div class="item-dot"></div><div class="item-time">14:00</div><div class="item-title">논골담길 산책</div><div class="item-desc">소박한 골목길 벽화 명소.</div><span class="item-tag tag-spot">Spot</span></div>
+          <div class="item"><div class="item-dot"></div><div class="item-time">15:30</div><div class="item-title">묵호등대 & 도째비골</div><div class="item-desc">동해바다가 한눈에 내려다보이는 전망.</div><span class="item-tag tag-spot">Spot</span></div>
+          <div class="item"><div class="item-dot"></div><div class="item-time">17:00</div><div class="item-title">카라멜 스테이션</div><div class="item-desc">힙한 감성 공간에서 잠시 휴식.</div><span class="item-tag tag-food">Cafe</span></div>
+          <div class="item"><div class="item-dot"></div><div class="item-time">18:30</div><div class="item-title">삼척 준펜션 체크인</div><div class="item-desc">안락하고 깨끗한 숙소.</div><span class="item-tag tag-stay">Stay</span></div>
         </div>
       </div>
-
-      <div class="day-section" id="day2Section">
-        <div class="day-title">Day 02 <span class="date editable-field" id="day2Title">자연의 신비와 여운</span></div>
-        <div class="timeline-items" id="day2Items"></div>
-        <div class="add-item-container">
-          <button class="btn-add" onclick="addNewItem('day2')">+ 새로운 일정 추가 (Day 2)</button>
+      <div class="day-section">
+        <div class="day-title">Day 02 <span class="date">자연의 신비와 여운</span></div>
+        <div class="timeline-items">
+          <div class="item"><div class="item-dot"></div><div class="item-time">10:00</div><div class="item-title">숙소 체크아웃</div><div class="item-desc">정든 숙소를 정리하고 출발합니다.</div></div>
+          <div class="item"><div class="item-dot"></div><div class="item-time">10:30</div><div class="item-title">추암 촛대바위</div><div class="item-desc">동해의 보석, 애국가 배경화면.</div><span class="item-tag tag-spot">Spot</span></div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="map-container">
-    <a href="#" id="kakaoLinkBtn" target="_blank" class="kakao-redirect-btn">현 위치 카카오맵에서 보기 ↗</a>
     <div id="naverMap"></div>
     <div class="map-overlay-card">
-      <div class="overlay-title editable-field" id="overlayTitle">동선 가이드</div>
-      <div class="overlay-desc editable-field" id="overlayDesc">가이드 정보 로딩 중...</div>
+      <div class="overlay-title">동선 가이드</div>
+      <div class="overlay-desc">최적의 감성 루트 가이드입니다.</div>
     </div>
   </div>
 </div>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=554f46e78eae0af969d1c18e06539ce3&libraries=services"></script>
-
 <script>
-const DB_URL = "https://mukho-trip-default-rtdb.firebaseio.com/tripData.json";
-const EDIT_PASSWORD = "813815";
-
-const defaultMeta = {
-  mainTitle: '푸른 바다와<br>유산의 도시, 동해',
-  mainSubtitle: '묵호항 중심의 감성 여행 코스 가이드',
-  day1Title: '바다와 감성의 시작',
-  day2Title: '자연의 신비와 여운',
-  overlayTitle: '동선 가이드',
-  overlayDesc: '묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.'
-};
-
-const defaultSchedule = [
-  { "id": "item1", "day": "day1", "time": "06:30", "title": "금강마을에서 출발", "desc": "약 230km, 3시간 예상 중간 여주휴게소 들를 예정", "tag": "none", "address": "부천 금강마을" },
-  { "id": "item2", "day": "day1", "time": "08:00", "title": "여주휴게소 도착", "desc": "출발 약 1시간 30분 지점, 간단히 아침 먹거나 화장실 갔다오기~!", "tag": "spot", "address": "여주휴게소 강릉방향" },
-  { "id": "item3", "day": "day1", "time": "09:00", "title": "묵호 도착 - 어달항 노상 주차장으로 이동", "desc": "바로 주차 후 도보 일정 시작 - 주차 무료", "tag": "spot", "address": "어달항" },
-  { "id": "item4", "day": "day1", "time": "09:20", "title": "어달항 & 어달삼거리", "desc": "사진 스팟마다 가서 열심히 사진 찍기~", "tag": "spot", "address": "어달삼거리" },
-  { "id": "item5", "day": "day1", "time": "10:00", "title": "등대그집, 무코야 소품샵", "desc": "등대그집 오픈 9시 먼저 들럿다가 10시 30분 오픈되는 무코야 소품샵 들리기", "tag": "spot", "address": "등대그집" },
-  { "id": "item6", "day": "day2", "time": "10:00", "title": "삼척 준펜션", "desc": "정든 숙소를 정리하고 둘째 날의 새로운 여정을 향해 출발합니다.", "tag": "stay", "address": "삼척 준펜션" },
-  { "id": "item7", "day": "day2", "time": "10:30", "title": "추암 촛대바위", "desc": "동해의 보석, 애국가 첫 소절의 배경화면으로 유명한 신비로운 기암괴석과 출렁다리를 감상합니다.", "tag": "spot", "address": "추암 촛대바위" },
-  { "id": "item8", "day": "day2", "time": "13:00", "title": "묵호역 복귀 및 해산", "desc": "즐거웠던 기억을 안고 다시 묵호역으로 돌아와 여정을 마무리합니다. 다음에 또 만나요!", "tag": "none", "address": "" },
-  { "id": "item_1779246005821", "day": "day1", "time": "11:00", "title": "도째비골 스카이밸리", "desc": "스카이밸리에서 자이언트 슬라이드, 스카이바이크 타기!", "tag": "spot", "address": "도째비골 스카이밸리" },
-  { "id": "item_1779249266721", "day": "day1", "time": "12:10", "title": "묵호항 - 묵호항 공영주차장 이동", "desc": "묵호항쪽에 식당, 카페들 많으니까 이동~", "tag": "none", "address": "묵호항 공영주차장" },
-  { "id": "item_1779249270015", "day": "day1", "time": "12:20", "title": "점심시간~", "desc": "오뚜기 칼국수/대우 칼국수/거동탕수육 중 골라서 가기!!", "tag": "food", "address": "동해 거동탕수육" },
-  { "id": "item_1779249271231", "day": "day1", "time": "14:00", "title": "카라멜 스테이션 or 현상소 카페가기~", "desc": "둘다 거리 비슷해서 더 끌리는곳 가기!", "tag": "none", "address": "카라멜스테이션" },
-  { "id": "item_1779249625242", "day": "day1", "time": "15:00", "title": "동쪽바다중앙시장 가기~", "desc": "파닭김밥 브레이크 타임 참고!", "tag": "none", "address": "동쪽바다중앙시장" }
+// 정보창에 매핑해줄 세부 정보 데이터셋
+const mapLocations = [
+  { title: '논골담길', address: '강원특별자치도 동해시 논골1길 2', rating: '4.2', reviews: '124', phone: '033-530-2231', placeId: '13551522' },
+  { title: '묵호등대', address: '강원특별자치도 동해시 등대오름길 34', rating: '4.5', reviews: '342', phone: '033-531-3258', placeId: '10815418' },
+  { title: '카라멜스테이션', address: '강원특별자치도 동해시 발한로 219-11', rating: '4.7', reviews: '85', phone: '0507-1361-5555', placeId: '1130635992' },
+  { title: '도째비골 스카이밸리', address: '강원특별자치도 동해시 등대오름길 43-1', rating: '4.6', reviews: '512', phone: '033-534-6955', placeId: '542618991' },
+  { title: '삼척 준펜션', address: '강원특별자치도 삼척시 근덕면 삼척로 2100', rating: '4.3', reviews: '41', phone: '010-5374-4543', placeId: '1849141042' },
+  { title: '추암 촛대바위', address: '강원특별자치도 동해시 촛대바위길 28', rating: '4.4', reviews: '620', phone: '033-530-2801', placeId: '8215682' }
 ];
 
-let textMetaData = {};
-let initialTimelineData = [];
-let map, placesService, geocoder, polyline;
-let markers = [];
-let infowindows = [];
-let isEditMode = false;
-let markerMap = {};
-
-async function loadDataFromServer() {
-  try {
-    const response = await fetch(DB_URL);
-    const serverData = await response.json();
-    
-    if(serverData && serverData.schedule && serverData.schedule.length > 0) {
-      textMetaData = serverData.meta;
-      initialTimelineData = serverData.schedule;
-    } else {
-      textMetaData = defaultMeta;
-      initialTimelineData = defaultSchedule;
-    }
-    renderTextMetaUI();
-    renderTimelineUI();
-    updateMapEngine();
-  } catch (error) {
-    console.error("서버 연결 실패, 기본 데이터 로드:", error);
-    textMetaData = defaultMeta;
-    initialTimelineData = defaultSchedule;
-    renderTextMetaUI();
-    renderTimelineUI();
-    updateMapEngine();
-  }
-}
-
-async function saveDataToServer() {
-  try {
-    await fetch(DB_URL, {
-      method: "PUT",
-      body: JSON.stringify({
-        meta: textMetaData,
-        schedule: initialTimelineData
-      })
-    });
-    alert("공용 데이터베이스 동기화 완료!");
-  } catch (error) {
-    alert("데이터베이스 저장 처리에 실패했습니다.");
-  }
-}
-
-function renderTextMetaUI() {
-  document.getElementById('mainTitle').innerHTML = textMetaData.mainTitle || '';
-  document.getElementById('mainSubtitle').innerText = textMetaData.mainSubtitle || '';
-  document.getElementById('day1Title').innerText = textMetaData.day1Title || '';
-  document.getElementById('day2Title').innerText = textMetaData.day2Title || '';
-  document.getElementById('overlayTitle').innerText = textMetaData.overlayTitle || '';
-  document.getElementById('overlayDesc').innerText = textMetaData.overlayDesc || '';
-}
-
-function renderTimelineUI() {
-  const day1Container = document.getElementById('day1Items');
-  const day2Container = document.getElementById('day2Items');
-  day1Container.innerHTML = '';
-  day2Container.innerHTML = '';
-
-  initialTimelineData.forEach(item => {
-    const hasAddress = item.address && item.address.trim() !== '';
-    const kakaoMapSearchUrl = hasAddress ? `https://map.kakao.com/link/search/${encodeURIComponent(item.address)}` : '#';
-
-    const itemHTML = `
-      <div class="item" data-id="${item.id}" onclick="focusMapLocation('${item.id}')">
-        <div class="item-dot"></div>
-        <div class="item-time editable-field" contenteditable="${isEditMode}">${item.time}</div>
-        <div class="item-title editable-field" contenteditable="${isEditMode}">${item.title}</div>
-        <div class="item-desc editable-field" contenteditable="${isEditMode}">${item.desc}</div>
-        <button class="btn-delete" onclick="event.stopPropagation(); deleteItem('${item.id}')">삭제</button>
-        <input type="text" class="address-field" placeholder="장소명(POI) 또는 도로명 주소 입력" value="${item.address || ''}" onclick="event.stopPropagation();">
-        <div>
-          <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
-          ${hasAddress ? `<a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" id="link-${item.id}" onclick="event.stopPropagation();">카카오맵 상세 보기 ↗</a>` : ''}
-        </div>
-        <select class="item-tag-select" onclick="event.stopPropagation();">
-          <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
-          <option value="spot" ${item.tag === 'spot' ? 'selected' : ''}>SPOT</option>
-          <option value="food" ${item.tag === 'food' ? 'selected' : ''}>CAFE/FOOD</option>
-          <option value="stay" ${item.tag === 'stay' ? 'selected' : ''}>STAY</option>
-        </select>
-      </div>
-    `;
-    if (item.day === 'day1') day1Container.insertAdjacentHTML('beforeend', itemHTML);
-    else day2Container.insertAdjacentHTML('beforeend', itemHTML);
-  });
-}
-
-function focusMapLocation(itemId) {
-  if (isEditMode) return;
-  const targetData = markerMap[itemId];
-  if (!targetData) return;
-
-  infowindows.forEach(iw => iw.close());
-  map.panTo(targetData.coords);
-  targetData.infowindow.open(map, targetData.marker);
-}
-
-function updateKakaoMapRedirectUrl() {
-  const center = map.getCenter();
-  const level = map.getLevel();
-  const redirectUrl = `https://map.kakao.com/?map_type=TYPE_MAP&target=car&rt=,,&from=&to=&lu=&sys=web&eX=&eY=&sX=&sY=&cx=${center.getLng()}&cy=${center.getLat()}&level=${15 - level}`;
-  document.getElementById('kakaoLinkBtn').href = redirectUrl;
-}
-
-function addNewItem(day) {
-  const newId = 'item_' + Date.now();
-  initialTimelineData.push({ id: newId, day: day, time: '12:00', title: '새 일정 명칭', desc: '설명을 입력해 주세요.', tag: 'none', address: '' });
-  renderTimelineUI();
-}
-
-function deleteItem(id) {
-  initialTimelineData = initialTimelineData.filter(d => d.id !== id);
-  renderTimelineUI();
-}
-
-const editBtn = document.getElementById('editBtn');
-editBtn.addEventListener('click', async () => {
-  if (!isEditMode) {
-    const userInput = prompt("편집을 시작하려면 암호를 입력해 주세요:");
-    if (userInput !== EDIT_PASSWORD) {
-      alert("암호가 일치하지 않아 편집 모드를 활성화할 수 없습니다.");
-      return;
-    }
-  }
-
-  isEditMode = !isEditMode;
-  
-  if (isEditMode) {
-    document.body.classList.add('edit-mode');
-    editBtn.textContent = '저장 하기';
-    editBtn.classList.add('editing');
-    document.querySelectorAll('.editable-field').forEach(el => el.setAttribute('contenteditable', 'true'));
-    renderTimelineUI(); 
-  } else {
-    document.body.classList.remove('edit-mode');
-    editBtn.textContent = '편집 모드';
-    editBtn.classList.remove('editing');
-    document.querySelectorAll('.editable-field').forEach(el => el.setAttribute('contenteditable', 'false'));
-
-    textMetaData.mainTitle = document.getElementById('mainTitle').innerHTML;
-    textMetaData.mainSubtitle = document.getElementById('mainSubtitle').innerText;
-    textMetaData.day1Title = document.getElementById('day1Title').innerText;
-    textMetaData.day2Title = document.getElementById('day2Title').innerText;
-    textMetaData.overlayTitle = document.getElementById('overlayTitle').innerText;
-    textMetaData.overlayDesc = document.getElementById('overlayDesc').innerText;
-
-    document.querySelectorAll('.timeline-items .item').forEach(itemEl => {
-      const id = itemEl.getAttribute('data-id');
-      const time = itemEl.querySelector('.item-time').innerText.trim();
-      const title = itemEl.querySelector('.item-title').innerText.trim();
-      const desc = itemEl.querySelector('.item-desc').innerText.trim();
-      const address = itemEl.querySelector('.address-field').value.trim();
-      const tag = itemEl.querySelector('.item-tag-select').value;
-
-      const dataObj = initialTimelineData.find(d => d.id === id);
-      if (dataObj) {
-        dataObj.time = time;
-        dataObj.title = title;
-        dataObj.desc = desc;
-        dataObj.address = address;
-        dataObj.tag = tag;
-      }
-    });
-
-    renderTextMetaUI();
-    renderTimelineUI();
-    updateMapEngine();
-
-    await saveDataToServer();
-  }
-});
-
-const themeBtn = document.getElementById('themeBtn');
-themeBtn.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-  themeBtn.textContent = document.body.classList.contains('dark-mode') ? '주간 모드' : '야간 모드';
-  if (!isEditMode) updateMapEngine();
-});
-
-// [핵심 변경 및 추가된 부분] POI 검색과 주소 검색을 결합한 하이브리드 지도 엔진
-function updateMapEngine() {
-  if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) return;
-  markers.forEach(m => m.setMap(null));
-  infowindows.forEach(i => i.close());
-  if (polyline) polyline.setMap(null);
-  
-  markers = []; 
-  infowindows = [];
-  markerMap = {};
-
-  const validLocations = initialTimelineData.filter(loc => loc.address && loc.address.trim() !== '');
-  if (validLocations.length === 0) return;
-
-  const bounds = new kakao.maps.LatLngBounds();
-  const positionsWithOrder = new Array(validLocations.length);
-  let processedCount = 0;
-
-  function checkAllProcessed() {
-    processedCount++;
-    if (processedCount === validLocations.length) {
-      const validPath = positionsWithOrder.filter(p => p !== undefined);
-      if (validPath.length > 0) {
-        polyline = new kakao.maps.Polyline({ 
-          map: map, 
-          path: validPath, 
-          strokeWeight: 3, 
-          strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82', 
-          strokeOpacity: 0.7, 
-          strokeStyle: 'solid' 
-        });
-      }
-      map.setBounds(bounds);
-      updateKakaoMapRedirectUrl();
-    }
-  }
-
-  function createMarkerAndInfoWindow(loc, index, coords, placeId) {
-    positionsWithOrder[index] = coords;
-    
-    const marker = new kakao.maps.Marker({ map: map, position: coords });
-    markers.push(marker);
-    
-    // 장소 고유 ID가 존재하면 고유 링크 매핑, 없을 경우 통합 검색 브릿지 링크 매핑
-    const kakaoPlaceUrl = placeId ? `https://place.map.kakao.com/${placeId}` : `https://map.kakao.com/link/search/${encodeURIComponent(loc.address)}`;
-    
-    const timelineLinkEl = document.getElementById(`link-${loc.id}`);
-    if(timelineLinkEl) timelineLinkEl.href = kakaoPlaceUrl;
-    
-    const infowindow = new kakao.maps.InfoWindow({ 
-      content: `
-        <div style="padding:8px 12px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center;">
-          <div style="margin-bottom:4px; white-space:nowrap;">${loc.title}</div>
-          <a href="${kakaoPlaceUrl}" target="_blank" style="font-size:10px; color:#2a6b82; text-decoration:underline; font-weight:bold;">상세 정보 보기 ↗</a>
-        </div>`
-    });
-    infowindows.push(infowindow);
-    
-    kakao.maps.event.addListener(marker, 'click', function() {
-      infowindows.forEach(iw => iw.close());
-      infowindow.open(map, marker);
-    });
-
-    markerMap[loc.id] = { marker: marker, infowindow: infowindow, coords: coords };
-    bounds.extend(coords);
-  }
-
-  validLocations.forEach((loc, index) => {
-    // 1단계: POI(장소명 키워드) 형태로 먼저 검색을 시도합니다.
-    placesService.keywordSearch(loc.address, function(result, status) {
-      if (status === kakao.maps.services.Status.OK) {
-        const poi = result[0];
-        const coords = new kakao.maps.LatLng(poi.y, poi.x);
-        createMarkerAndInfoWindow(loc, index, coords, poi.id);
-        checkAllProcessed();
-      } else {
-        // 2단계: 만약 POI 결과가 없다면 표준 도로명/지번 주소인지 geocoder 엔진으로 2차 조회합니다.
-        geocoder.addressSearch(loc.address, function(addrResult, addrStatus) {
-          if (addrStatus === kakao.maps.services.Status.OK) {
-            const coords = new kakao.maps.LatLng(addrResult[0].y, addrResult[0].x);
-            createMarkerAndInfoWindow(loc, index, coords, null);
-          } else {
-            console.warn(`검색 실패 (POI/주소 모두 없음): ${loc.address}`);
-          }
-          checkAllProcessed();
-        });
-      }
-    });
-  });
-}
-
 window.addEventListener('load', () => {
-  const container = document.getElementById('naverMap');
-  map = new kakao.maps.Map(container, { center: new kakao.maps.LatLng(37.53, 129.13), level: 8 });
-  
-  // 두 가지 서비스 인스턴스를 모두 초기화하여 사용합니다.
-  placesService = new kakao.maps.services.Places();
-  geocoder = new kakao.maps.services.Geocoder();
+  if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) return;
 
-  kakao.maps.event.addListener(map, 'idle', updateKakaoMapRedirectUrl);
-  loadDataFromServer();
+  const container = document.getElementById('naverMap');
+  const map = new kakao.maps.Map(container, { center: new kakao.maps.LatLng(37.53, 129.13), level: 8 });
+
+  const geocoder = new kakao.maps.services.Geocoder();
+  const bounds = new kakao.maps.LatLngBounds();
+  const positionsWithOrder = new Array(mapLocations.length);
+  let processedCount = 0;
+  
+  // 하나의 인포윈도우 객체만 생성하여 돌려쓰기 함으로써, 다른 마커 클릭 시 기존 창이 자동으로 닫히게 설정합니다.
+  const infowindow = new kakao.maps.InfoWindow({ removable: true });
+
+  mapLocations.forEach((loc, index) => {
+    geocoder.addressSearch(loc.address, function(result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        positionsWithOrder[index] = coords;
+
+        const marker = new kakao.maps.Marker({ map: map, position: coords });
+
+        // ── 순정 InfoWindow 내부에 바인딩할 HTML 문자열 조립 ──
+        const contentString = `
+          <div class="info-window-content">
+            <div class="info-title-wrap">
+              <a href="https://place.map.kakao.com/${loc.placeId}" target="_blank" class="info-title">${loc.title} ➔</a>
+            </div>
+            <div class="info-rating">
+              ★ ${loc.rating} <a href="https://place.map.kakao.com/${loc.placeId}#comment" target="_blank" class="info-reviews">(리뷰 ${loc.reviews})</a>
+            </div>
+            <div class="info-address">${loc.address}</div>
+            <div class="info-phone">${loc.phone}</div>
+            <div class="info-links">
+              <a href="https://place.map.kakao.com/${loc.placeId}" target="_blank" class="info-link-btn">상세보기 ↗</a>
+              <a href="https://map.kakao.com/link/to/${encodeURIComponent(loc.title)},${coords.getLat()},${coords.getLng()}" target="_blank" class="info-link-btn" style="color:#257cff; font-weight:bold;">길찾기 ➔</a>
+            </div>
+          </div>
+        `;
+
+        // 마커 클릭 시 생성해 둔 단일 인포윈도우의 내용물(Content)만 교체하여 오픈
+        kakao.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(contentString);
+          infowindow.open(map, marker);
+          map.panTo(coords);
+        });
+
+        bounds.extend(coords);
+      }
+
+      processedCount++;
+      if (processedCount === mapLocations.length) {
+        const validPath = positionsWithOrder.filter(p => p !== undefined);
+        if (validPath.length > 0) {
+          new kakao.maps.Polyline({
+            map: map, path: validPath, strokeWeight: 3, strokeColor: '#2a6b82', strokeOpacity: 0.7, strokeStyle: 'solid'
+          });
+        }
+        map.setBounds(bounds);
+      }
+    });
+  });
 });
 </script>
 </body>
