@@ -145,10 +145,10 @@ body.edit-mode .item-tag { display:none; }
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=554f46e78eae0af969d1c18e06539ce3&libraries=services"></script>
 
 <script>
-// 실시간 연동용 데이터베이스 커넥터 엔진 주소
+// ★ 3단계: 전달해주신 고유 주소를 반영했습니다! 끝에 경로용 json 파일명 명시 완료
 const DB_URL = "https://mukho-trip-default-rtdb.firebaseio.com/tripData.json";
 
-// 기본 텍스트 정보 설정
+// 기본 상단 텍스트 정보
 const defaultMeta = {
   mainTitle: '푸른 바다와<br>유산의 도시, 동해',
   mainSubtitle: '묵호항 중심의 감성 여행 코스 가이드',
@@ -158,7 +158,7 @@ const defaultMeta = {
   overlayDesc: '묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.'
 };
 
-// ★ 보내주신 최신 수정 일정 데이터 적용 완료!
+// 수정하신 최신 일정 데이터셋
 const defaultSchedule = [
   { "id": "item1", "day": "day1", "time": "06:30", "title": "금강마을에서 출발", "desc": "약 230km, 3시간 예상 중간 여주휴게소 들를 예정", "tag": "none", "address": "경기도 부천시 원미구 계남로 106" },
   { "id": "item2", "day": "day1", "time": "08:00", "title": "여주휴게소 도착", "desc": "출발 약 1시간 30분 지점, 간단히 아침 먹거나 화장실 갔다오기~!", "tag": "spot", "address": "경기도 여주시 가남읍 여주남로 722" },
@@ -184,7 +184,7 @@ let markers = [];
 let infowindows = [];
 let isEditMode = false;
 
-// 서버에서 실시간 데이터 로드해오기
+// 서버에서 데이터 자동 받아오기
 async function loadDataFromServer() {
   try {
     const response = await fetch(DB_URL);
@@ -194,7 +194,6 @@ async function loadDataFromServer() {
       textMetaData = serverData.meta;
       initialTimelineData = serverData.schedule;
     } else {
-      // 서버 데이터가 비었거나 없을 때 위 코드가 소유한 기본 설정 사용
       textMetaData = defaultMeta;
       initialTimelineData = defaultSchedule;
     }
@@ -202,8 +201,7 @@ async function loadDataFromServer() {
     renderTimelineUI();
     updateMapEngine();
   } catch (error) {
-    console.error("데이터 동기화 실패:", error);
-    // 통신 오류 시 최신 내 일정으로 화면 구성 유지 보장
+    console.error("서버 연결 안 됨, 로컬 데이터 대체:", error);
     textMetaData = defaultMeta;
     initialTimelineData = defaultSchedule;
     renderTextMetaUI();
@@ -212,7 +210,7 @@ async function loadDataFromServer() {
   }
 }
 
-// 서버에 실시간 데이터 업데이트하기 
+// 서버에 데이터 업데이트 전송하기
 async function saveDataToServer() {
   try {
     await fetch(DB_URL, {
@@ -222,9 +220,9 @@ async function saveDataToServer() {
         schedule: initialTimelineData
       })
     });
-    alert("공용 데이터베이스 동기화 완료! 링크를 가진 모든 사람의 화면에 내가 수정한 일정이 나타납니다.");
+    alert("내 Firebase 원격 서버 동기화 완료! 링크를 연 모든 일행의 화면이 동시 업데이트됩니다.");
   } catch (error) {
-    alert("데이터 서버 전송에 실패했습니다.");
+    alert("Firebase 데이터베이스 통신 오류가 발생했습니다.");
   }
 }
 
@@ -322,7 +320,7 @@ editBtn.addEventListener('click', async () => {
     renderTimelineUI();
     updateMapEngine();
 
-    // 변경 및 새로고침 내역을 서버에 실시간 완벽 저장
+    // 동기화 실행
     await saveDataToServer();
   }
 });
