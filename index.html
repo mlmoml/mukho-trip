@@ -35,7 +35,7 @@ body{background:var(--white);color:var(--ink);font-family:var(--sans);-webkit-fo
 h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);line-height:1.25;letter-spacing:-0.5px;}
 .subtitle{font-size:14px;color:var(--muted);margin-top:8px;font-weight:300;}
 
-/* 상단 우측 기능 버튼 레이아웃 */
+/* 상단 제어 버튼 그룹 */
 .header-controls { position:absolute; top:40px; right:32px; display:flex; gap:8px; }
 .btn-control {
   background:var(--ocean-pale); border:1px solid var(--border); color:var(--ocean-mid); 
@@ -57,12 +57,12 @@ h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);li
 .item-dot{position:absolute;left:-24px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--white);border:2px solid var(--ocean-mid);transition:all 0.3s ease;z-index:2;}
 .item:hover .item-dot{background:var(--coral);border-color:var(--coral);transform:scale(1.2);}
 
-/* 편집 모드 전용 인라인 스타일 */
+/* 편집 모드 스타일 */
 .editable-field { border-radius:3px; transition:all 0.2s; }
 body.edit-mode .editable-field { background:var(--ocean-pale); box-shadow:0 0 0 2px var(--ocean-pale); min-height:1.2em; }
 body.edit-mode .editable-field:focus { background:var(--white); box-shadow:0 0 0 2px var(--coral); color:var(--ink); outline:none; }
 
-/* 주소 입력을 위한 숨겨진/보여지는 필드 구성 */
+/* 주소 입력 필드 제어 */
 .address-field { display:none; font-size:11px; color:var(--ocean-mid); margin-top:4px; font-family:var(--sans); width:100%; border:none; background:transparent; }
 body.edit-mode .address-field { display:block; border-bottom:1px dashed var(--border); padding:2px 0; }
 body.edit-mode .address-field:focus { outline:none; border-bottom-color:var(--coral); }
@@ -73,9 +73,16 @@ body.edit-mode .add-item-container { display:block; }
 .btn-add { background:transparent; border:1px dashed var(--ocean-mid); color:var(--ocean-mid); padding:8px; width:100%; border-radius:6px; font-size:13px; cursor:pointer; font-weight:500; }
 .btn-add:hover { background:var(--ocean-pale); }
 
+/* 삭제 버튼 추가 */
+.btn-delete { display:none; position:absolute; top:4px; right:0; background:transparent; border:none; color:var(--muted); font-size:11px; cursor:pointer; }
+body.edit-mode .btn-delete { display:block; }
+body.edit-mode .btn-delete:hover { color:var(--coral); }
+
 .item-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--coral);line-height:1;margin-bottom:4px;display:inline-block;}
-.item-title{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4;}
+.item-title{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4;padding-right:30px;}
 .item-desc{font-size:13px;color:var(--muted);margin-top:4px;font-weight:300;line-height:1.5;}
+
+/* 태그 편집 셀렉트박스 */
 .item-tag-select { display:none; margin-top:6px; font-size:11px; padding:2px; border-radius:4px; background:var(--white); color:var(--ink); border:1px solid var(--border); }
 body.edit-mode .item-tag-select { display:inline-block; }
 body.edit-mode .item-tag { display:none; }
@@ -104,8 +111,8 @@ body.edit-mode .item-tag { display:none; }
   <div class="sidebar">
     <div class="header">
       <div class="header-meta">1박 2일 여행<span>Mukho Trip</span></div>
-      <h1 class="editable-field">푸른 바다와<br>유산의 도시, 동해</h1>
-      <div class="subtitle editable-field">묵호항 중심의 감성 여행 코스 가이드</div>
+      <h1 class="editable-field" id="mainTitle">푸른 바다와<br>유산의 도시, 동해</h1>
+      <div class="subtitle editable-field" id="mainSubtitle">묵호항 중심의 감성 여행 코스 가이드</div>
       
       <div class="header-controls">
         <button class="btn-control" id="editBtn">편집 모드</button>
@@ -115,18 +122,16 @@ body.edit-mode .item-tag { display:none; }
 
     <div class="timeline">
       <div class="day-section" id="day1Section">
-        <div class="day-title">Day 01 <span class="date editable-field">바다와 감성의 시작</span></div>
-        <div class="timeline-items" id="day1Items">
-          </div>
+        <div class="day-title">Day 01 <span class="date editable-field" id="day1Title">바다와 감성의 시작</span></div>
+        <div class="timeline-items" id="day1Items"></div>
         <div class="add-item-container">
           <button class="btn-add" onclick="addNewItem('day1')">+ 새로운 일정 추가 (Day 1)</button>
         </div>
       </div>
 
       <div class="day-section" id="day2Section">
-        <div class="day-title">Day 02 <span class="date editable-field">자연의 신비와 여운</span></div>
-        <div class="timeline-items" id="day2Items">
-          </div>
+        <div class="day-title">Day 02 <span class="date editable-field" id="day2Title">자연의 신비와 여운</span></div>
+        <div class="timeline-items" id="day2Items"></div>
         <div class="add-item-container">
           <button class="btn-add" onclick="addNewItem('day2')">+ 새로운 일정 추가 (Day 2)</button>
         </div>
@@ -137,16 +142,26 @@ body.edit-mode .item-tag { display:none; }
   <div class="map-container">
     <div id="naverMap"></div>
     <div class="map-overlay-card">
-      <div class="overlay-title editable-field">동선 가이드</div>
-      <div class="overlay-desc editable-field">묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.</div>
+      <div class="overlay-title editable-field" id="overlayTitle">동선 가이드</div>
+      <div class="overlay-desc editable-field" id="overlayDesc">묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.</div>
     </div>
   </div>
 </div>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=554f46e78eae0af969d1c18e06539ce3&libraries=services"></script>
 <script>
-// 내부 메모리 데이터 모델 구조화 (주소 포함)
-let initialTimelineData = [
+// 1. 초기 텍스트 메타 정보 동기화 로드
+const textMetaData = JSON.parse(localStorage.getItem('myTripMeta')) || {
+  mainTitle: '푸른 바다와<br>유산의 도시, 동해',
+  mainSubtitle: '묵호항 중심의 감성 여행 코스 가이드',
+  day1Title: '바다와 감성의 시작',
+  day2Title: '자연의 신비와 여운',
+  overlayTitle: '동선 가이드',
+  overlayDesc: '묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.'
+};
+
+// 2. 타임라인 리스트 로컬스토리지 백업 데이터 로드
+let initialTimelineData = JSON.parse(localStorage.getItem('myTripSchedule')) || [
   { id: 'item1', day: 'day1', time: '13:30', title: '묵호역 도착 및 이동', desc: '설레는 동해 여행의 시작점. 묵호역에서 나와 바다 내음을 마시며 여정을 시작합니다.', tag: 'none', address: '' },
   { id: 'item2', day: 'day1', time: '14:00', title: '논골담길 산책', desc: '소박한 골목길 벽화와 주민들의 이야기가 담긴 감성 명소. 느린 걸음으로 걸어 올라갑니다.', tag: 'spot', address: '강원특별자치도 동해시 논골1길 2' },
   { id: 'item3', day: 'day1', time: '15:30', title: '묵호등대', desc: '동해바다가 한눈에 내려다보이는 시원한 전망과 짜릿한 스카이워크 체험을 동시에 즐깁니다.', tag: 'spot', address: '강원특별자치도 동해시 등대오름길 34' },
@@ -162,7 +177,17 @@ let markers = [];
 let infowindows = [];
 let isEditMode = false;
 
-// 화면에 일정을 UI로 그려주는 함수
+// 메타 텍스트 화면에 바인딩
+function renderTextMetaUI() {
+  document.getElementById('mainTitle').innerHTML = textMetaData.mainTitle;
+  document.getElementById('mainSubtitle').innerText = textMetaData.mainSubtitle;
+  document.getElementById('day1Title').innerText = textMetaData.day1Title;
+  document.getElementById('day2Title').innerText = textMetaData.day2Title;
+  document.getElementById('overlayTitle').innerText = textMetaData.overlayTitle;
+  document.getElementById('overlayDesc').innerText = textMetaData.overlayDesc;
+}
+
+// 타임라인 그리기
 function renderTimelineUI() {
   const day1Container = document.getElementById('day1Items');
   const day2Container = document.getElementById('day2Items');
@@ -177,7 +202,8 @@ function renderTimelineUI() {
         <div class="item-time editable-field" contenteditable="${isEditMode}">${item.time}</div>
         <div class="item-title editable-field" contenteditable="${isEditMode}">${item.title}</div>
         <div class="item-desc editable-field" contenteditable="${isEditMode}">${item.desc}</div>
-        <input type="text" class="address-field" placeholder="지도 연동 도로명 주소 입력" value="${item.address || ''}">
+        <button class="btn-delete" onclick="deleteItem('${item.id}')">삭제</button>
+        <input type="text" class="address-field" placeholder="정확한 도로명 주소 입력" value="${item.address || ''}">
         <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
         <select class="item-tag-select">
           <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
@@ -196,44 +222,53 @@ function renderTimelineUI() {
   });
 }
 
-// 새로운 일정 항목을 배열 데이터에 동적으로 추가해주는 함수
+// 새 일정 등록
 function addNewItem(day) {
   const newId = 'item_' + Date.now();
   initialTimelineData.push({
     id: newId,
     day: day,
     time: '12:00',
-    title: '새로운 장소명',
-    desc: '상세 일정 설명을 적어주세요.',
+    title: '새 일정 명칭',
+    desc: '설명을 입력해 주세요.',
     tag: 'none',
     address: ''
   });
   renderTimelineUI();
 }
 
-// 편집 모드 토글 시스템 조율
+// 일정 항목 삭제
+function deleteItem(id) {
+  initialTimelineData = initialTimelineData.filter(d => d.id !== id);
+  renderTimelineUI();
+}
+
+// 편집 토글 버튼 액션
 const editBtn = document.getElementById('editBtn');
 editBtn.addEventListener('click', () => {
   isEditMode = !isEditMode;
   
   if (isEditMode) {
-    // 1. 편집 활성화 모드 진입
     document.body.classList.add('edit-mode');
     editBtn.textContent = '저장 하기';
     editBtn.classList.add('editing');
-    
-    // 글로벌 헤더 등도 수정가능하게 개방
     document.querySelectorAll('.editable-field').forEach(el => el.setAttribute('contenteditable', 'true'));
     renderTimelineUI(); 
   } else {
-    // 2. 저장 프로세스 시작 (수정된 값 백업 수집)
     document.body.classList.remove('edit-mode');
     editBtn.textContent = '편집 모드';
     editBtn.classList.remove('editing');
-    
     document.querySelectorAll('.editable-field').forEach(el => el.setAttribute('contenteditable', 'false'));
 
-    // UI 엘리먼트 순회하며 데이터 동기화 반영
+    // 메타 제목 데이터 백업 수집
+    textMetaData.mainTitle = document.getElementById('mainTitle').innerHTML;
+    textMetaData.mainSubtitle = document.getElementById('mainSubtitle').innerText;
+    textMetaData.day1Title = document.getElementById('day1Title').innerText;
+    textMetaData.day2Title = document.getElementById('day2Title').innerText;
+    textMetaData.overlayTitle = document.getElementById('overlayTitle').innerText;
+    textMetaData.overlayDesc = document.getElementById('overlayDesc').innerText;
+
+    // 타임라인 세부 데이터 백업 수집
     document.querySelectorAll('.timeline-items .item').forEach(itemEl => {
       const id = itemEl.getAttribute('data-id');
       const time = itemEl.querySelector('.item-time').innerText.trim();
@@ -252,13 +287,17 @@ editBtn.addEventListener('click', () => {
       }
     });
 
-    // 화면 갱신 후 바뀐 주소 바탕으로 카카오 지도 실시간 재구축
+    // ★ 로컬 스토리지에 영구 데이터 보존 처리
+    localStorage.setItem('myTripMeta', JSON.stringify(textMetaData));
+    localStorage.setItem('myTripSchedule', JSON.stringify(initialTimelineData));
+
+    renderTextMetaUI();
     renderTimelineUI();
     updateMapEngine();
   }
 });
 
-// 야간 모드 복구
+// 야간 모드 설정
 const themeBtn = document.getElementById('themeBtn');
 themeBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
@@ -266,18 +305,16 @@ themeBtn.addEventListener('click', () => {
   if (!isEditMode) updateMapEngine();
 });
 
-// 주소 딕셔너리 기반 카카오지도 맵핑 코어 엔진
+// 카카오 지도 렌더링 코어 엔진
 function updateMapEngine() {
   if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) return;
 
-  // 기존 맵 오브젝트 클리어 초기화
   markers.forEach(m => m.setMap(null));
   infowindows.forEach(i => i.close());
   if (polyline) polyline.setMap(null);
   markers = [];
   infowindows = [];
 
-  // 주소가 실존하는 유효 데이터들만 필터링 가공
   const validLocations = initialTimelineData.filter(loc => loc.address && loc.address.trim() !== '');
   if (validLocations.length === 0) return;
 
@@ -295,7 +332,7 @@ function updateMapEngine() {
         markers.push(marker);
 
         const infowindow = new kakao.maps.InfoWindow({
-          content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:#1a2530; border-radius:4px; background:#fff; border:none;">${loc.title}</div>`
+          content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px;">${loc.title}</div>`
         });
         infowindows.push(infowindow);
 
@@ -324,12 +361,13 @@ function updateMapEngine() {
   });
 }
 
-// 시스템 부트스트랩 초기화
+// 앱 실행 초기화
 window.addEventListener('load', () => {
   const container = document.getElementById('naverMap');
   map = new kakao.maps.Map(container, { center: new kakao.maps.LatLng(37.53, 129.13), level: 8 });
   geocoder = new kakao.maps.services.Geocoder();
 
+  renderTextMetaUI();
   renderTimelineUI();
   updateMapEngine();
 });
