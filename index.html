@@ -15,1047 +15,224 @@
   --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif; --mono:'DM Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--white);color:var(--ink);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
-
-/* HERO */
-.hero{position:relative;background:var(--ocean);padding:70px 40px 60px;overflow:hidden;text-align:center;}
-.hero-waves{position:absolute;bottom:-2px;left:0;right:0;height:60px;overflow:hidden;}
-.hero-waves svg{width:100%;height:100%;}
-.hero-bg-circle{position:absolute;border-radius:50%;opacity:.07;background:#fff;}
-.circle-1{width:400px;height:400px;top:-150px;left:-120px;}
-.circle-2{width:300px;height:300px;top:-80px;right:-60px;}
-.trip-type{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--ocean-light);border:1px solid rgba(184,216,228,.4);padding:5px 14px;border-radius:2px;margin-bottom:22px;opacity:0;animation:fadeUp .6s ease .1s forwards;}
-.hero h1{font-family:var(--serif);font-size:clamp(2rem,5vw,3.2rem);font-weight:300;color:#fff;line-height:1.3;letter-spacing:-.02em;margin-bottom:14px;opacity:0;animation:fadeUp .6s ease .25s forwards;}
-.hero h1 em{font-style:normal;color:var(--ocean-light);}
-.hero-sub{font-size:14px;color:rgba(255,255,255,.65);font-weight:300;letter-spacing:.03em;margin-bottom:32px;opacity:0;animation:fadeUp .6s ease .35s forwards;}
-.hero-meta{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;opacity:0;animation:fadeUp .6s ease .45s forwards;}
-.meta-item{display:flex;flex-direction:column;align-items:center;gap:4px;}
-.meta-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);}
-.meta-value{font-size:14px;font-weight:400;color:rgba(255,255,255,.9);}
-.meta-divider{width:1px;height:36px;background:rgba(255,255,255,.15);align-self:center;}
-
-/* LAYOUT */
-.container{max-width:820px;margin:0 auto;padding:0 24px;}
-
-/* TABS */
-.day-tabs{display:flex;margin:48px 0 0;border-bottom:1px solid var(--border);align-items:flex-end;gap:0;}
-.day-tab{padding:14px 22px;font-family:var(--serif);font-size:15px;font-weight:400;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;user-select:none;margin-bottom:-1px;display:flex;align-items:center;gap:6px;}
-.day-tab:hover{color:var(--ocean);}
-.day-tab.active{color:var(--ocean);border-bottom-color:var(--ocean);}
-.day-tab span{font-family:var(--mono);font-size:11px;letter-spacing:1px;margin-right:4px;opacity:.5;}
-.day-tab .del-day{display:none;width:16px;height:16px;border-radius:50%;background:rgba(212,97,74,.15);color:var(--coral);font-size:10px;align-items:center;justify-content:center;margin-left:4px;line-height:1;}
-.day-tab:hover .del-day{display:flex;}
-.day-tab .del-day:hover{background:var(--coral);color:#fff;}
-.add-day-btn{padding:10px 16px;font-size:12px;color:var(--ocean-mid);background:var(--ocean-pale);border:1px dashed var(--ocean-light);border-radius:6px 6px 0 0;cursor:pointer;margin-left:8px;margin-bottom:-1px;font-family:var(--sans);transition:all .2s;white-space:nowrap;}
-.add-day-btn:hover{background:var(--ocean-light);}
-
-/* PANELS */
-.day-panel{display:none;}
-.day-panel.active{display:block;}
-.day-intro{padding:36px 0 28px;display:flex;align-items:flex-start;gap:24px;}
-.day-number-big{font-family:var(--serif);font-size:64px;font-weight:300;line-height:1;color:var(--border);flex-shrink:0;letter-spacing:-3px;user-select:none;}
-.day-intro-text h2{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ink);margin-bottom:6px;}
-.day-intro-text p{font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;}
-
-/* TIMELINE */
-.timeline{position:relative;padding-bottom:20px;}
-.timeline::before{content:'';position:absolute;left:68px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--ocean-light) 0%,var(--border) 50%,transparent 100%);}
-
-/* TIMELINE ITEM */
-.timeline-item{display:grid;grid-template-columns:68px 1fr;gap:0 24px;margin-bottom:20px;opacity:0;transform:translateY(16px);animation:fadeUp .5s ease forwards;position:relative;}
-.timeline-item.dragging{opacity:.4;background:var(--ocean-pale);border-radius:8px;}
-.timeline-item.drag-over-top::before{content:'';position:absolute;top:-3px;left:0;right:0;height:3px;background:var(--ocean-mid);border-radius:2px;}
-.timeline-item.drag-over-bottom::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:3px;background:var(--ocean-mid);border-radius:2px;}
-.timeline-item:nth-child(1){animation-delay:.05s}.timeline-item:nth-child(2){animation-delay:.10s}
-.timeline-item:nth-child(3){animation-delay:.15s}.timeline-item:nth-child(4){animation-delay:.20s}
-.timeline-item:nth-child(5){animation-delay:.25s}.timeline-item:nth-child(6){animation-delay:.30s}
-.timeline-item:nth-child(7){animation-delay:.35s}.timeline-item:nth-child(8){animation-delay:.40s}
-.timeline-item:nth-child(9){animation-delay:.45s}.timeline-item:nth-child(10){animation-delay:.50s}
-.timeline-item:nth-child(11){animation-delay:.55s}
-
-.time-col{text-align:right;padding-top:14px;position:relative;}
-.time-text{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.2;display:block;}
-.time-dot{position:absolute;right:-8px;top:17px;width:14px;height:14px;border-radius:50%;background:var(--white);border:2px solid var(--border);z-index:1;}
-.time-dot.accent{border-color:var(--ocean-mid);}
-.time-dot.accent::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:var(--ocean-mid);}
-.time-dot.highlight{border-color:var(--coral);}
-.time-dot.highlight::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:var(--coral);}
-.time-dot.sunrise-dot{border-color:var(--sunrise);}
-.time-dot.sunrise-dot::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:var(--sunrise);}
-.time-dot.cafe-dot{border-color:#9b7fc7;}
-.time-dot.cafe-dot::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#9b7fc7;}
-.time-dot.fun-dot{border-color:#e8a030;}
-.time-dot.fun-dot::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#e8a030;}
-
-/* CARD */
-.event-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px 20px;transition:box-shadow .2s,border-color .2s;position:relative;}
-.event-card:hover{border-color:var(--ocean-light);box-shadow:0 4px 20px rgba(26,74,92,.08);}
-.event-card.food{border-left:3px solid var(--coral);}
-.event-card.spot{border-left:3px solid var(--ocean-mid);}
-.event-card.stay{border-left:3px solid #6aab8e;}
-.event-card.move{border-left:3px solid var(--sand-dark);}
-.event-card.cafe{border-left:3px solid #9b7fc7;}
-.event-card.fun {border-left:3px solid #e8a030;}
-.event-card.sunrise-card{border-left:3px solid var(--sunrise);}
-
-/* 드래그 핸들 & 삭제 버튼 */
-.card-controls{position:absolute;top:10px;right:10px;display:none;align-items:center;gap:4px;}
-.timeline-item:hover .card-controls{display:flex;}
-.drag-handle{cursor:grab;padding:4px 5px;border-radius:4px;color:var(--muted);font-size:13px;background:var(--sand);line-height:1;user-select:none;}
-.drag-handle:hover{background:var(--ocean-pale);color:var(--ocean-mid);}
-.drag-handle:active{cursor:grabbing;}
-.delete-item{cursor:pointer;padding:4px 6px;border-radius:4px;color:var(--muted);font-size:11px;background:var(--sand);line-height:1;}
-.delete-item:hover{background:var(--coral-light);color:var(--coral);}
-.clone-item{cursor:pointer;padding:4px 6px;border-radius:4px;color:var(--muted);font-size:11px;background:var(--sand);line-height:1;}
-.clone-item:hover{background:#e7f3ff;color:#2563eb;}
-.collapse-item{cursor:pointer;padding:4px 6px;border-radius:4px;color:var(--muted);font-size:11px;background:var(--sand);line-height:1;}
-.collapse-item:hover{background:#fff4d8;color:#b7791f;}
-.timeline-item.collapsed .event-desc,
-.timeline-item.collapsed .event-tags,
-.timeline-item.collapsed .choice-box,
-.timeline-item.collapsed .fee-table{display:none;}
-.dark-toggle{background:#111827;color:#fff;}
-body.dark-mode{
-  --white:#111827;
-  --ink:#f3f4f6;
-  --muted:#cbd5e1;
-  --border:#334155;
-  --sand:#1f2937;
-  --ocean-pale:#172554;
-  background:#0f172a;
-}
-body.dark-mode .event-card,
-body.dark-mode .modal,
-body.dark-mode .new-day-modal,
-body.dark-mode .icon-picker{background:#1e293b;}
-
-
-.event-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;padding-right:60px;}
-.event-title{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--ink);line-height:1.4;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.title-icon{font-size:17px;cursor:pointer;flex-shrink:0;}
-.title-icon:hover{transform:scale(1.2);}
-.event-type-badge{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:2px;white-space:nowrap;flex-shrink:0;}
-.badge-food{background:var(--coral-light);color:var(--coral);}
-.badge-spot{background:var(--ocean-pale);color:var(--ocean-mid);}
-.badge-stay{background:#ddf0e6;color:#3a7a59;}
-.badge-move{background:#f0ece6;color:#8a7060;}
-.badge-cafe{background:#f0ebfa;color:#7055aa;}
-.badge-fun{background:#fef3e2;color:#c07820;}
-.badge-sunrise{background:var(--sunrise-light);color:#c47a1a;}
-.badge-parking{background:#e8f4e8;color:#3a7a50;}
-.event-desc{font-size:13px;color:var(--muted);line-height:1.75;font-weight:300;margin-bottom:10px;}
-.event-tags{display:flex;flex-wrap:wrap;gap:6px;}
-.tag{font-size:11px;padding:3px 10px;background:var(--sand);color:#7a6a55;border-radius:20px;font-weight:400;}
-.tag.green{background:#e8f4e8;color:#3a7a50;}
-.tag.purple{background:#f0ebfa;color:#7055aa;}
-.tag.orange{background:#fef3e2;color:#c07820;}
-.tag.red{background:var(--coral-light);color:var(--coral);}
-
-/* 선택지 박스 */
-.choice-box{margin-top:10px;background:var(--ocean-pale);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--ocean);}
-.choice-box strong{font-weight:500;display:block;margin-bottom:4px;font-family:var(--mono);letter-spacing:1px;font-size:10px;color:var(--ocean-mid);}
-.choice-item{display:flex;gap:6px;line-height:1.7;}
-.choice-item::before{content:'▸';color:var(--ocean-light);flex-shrink:0;}
-.choice-box.purple-box{background:#f6f0ff;}
-.choice-box.purple-box strong{color:#7055aa;}
-.choice-box.purple-box .choice-item{color:#6b5599;}
-.choice-box.purple-box .choice-item::before{color:#c4b4e8;}
-
-/* 요금표 */
-.fee-table{margin-top:10px;border-radius:6px;overflow:hidden;border:1px solid var(--border);font-size:12px;width:100%;}
-.fee-row{display:flex;}
-.fee-row:not(:last-child){border-bottom:1px solid var(--border);}
-.fee-label{padding:6px 12px;background:var(--sand);color:#7a6a55;font-weight:500;min-width:120px;flex-shrink:0;}
-.fee-value{padding:6px 12px;color:var(--ink);}
-.fee-value.free{color:#3a7a50;font-weight:500;}
-.fee-value.paid{color:var(--coral);font-weight:500;}
-
-/* ADD NEW ITEM */
-.add-item-btn{display:flex;align-items:center;gap:8px;margin:8px 0 24px 92px;padding:10px 16px;background:transparent;border:1px dashed var(--ocean-light);border-radius:8px;color:var(--ocean-mid);font-size:13px;cursor:pointer;font-family:var(--sans);transition:all .2s;width:calc(100% - 92px);}
-.add-item-btn:hover{background:var(--ocean-pale);border-color:var(--ocean-mid);}
-
-/* TIPS */
-.tips-section{margin:16px 0 48px;background:var(--ocean-pale);border-radius:10px;padding:24px 28px;border:1px solid var(--ocean-light);}
-.tips-header{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ocean-mid);margin-bottom:16px;}
-.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
-.tip-item{display:flex;gap:10px;align-items:flex-start;}
-.tip-icon{width:22px;height:22px;border-radius:50%;background:var(--ocean-light);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px;}
-.tip-text{font-size:13px;color:var(--ocean);line-height:1.6;font-weight:300;}
-
-/* FOOTER */
-.page-footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--muted);}
-.page-footer em{font-style:normal;color:var(--ocean-mid);}
-
-/* ── EDIT MODE ── */
-.edit-bar{position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
-.edit-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:30px;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:all .2s;white-space:nowrap;}
-.edit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2);}
-.btn-edit{background:var(--ocean);color:#fff;}
-.btn-save{background:#3a7a59;color:#fff;display:none;}
-.btn-cancel{background:#fff;color:var(--muted);border:1px solid var(--border);display:none;}
-.edit-hint{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--ocean);color:#fff;font-size:12px;padding:8px 20px;border-radius:20px;z-index:1000;box-shadow:0 4px 16px rgba(0,0,0,.2);display:none;white-space:nowrap;}
-body.edit-mode [contenteditable="true"]{outline:none;border-radius:3px;cursor:text;transition:background .15s;}
-body.edit-mode [contenteditable="true"]:hover{background:rgba(26,74,92,.06);}
-body.edit-mode [contenteditable="true"]:focus{background:rgba(26,74,92,.09);box-shadow:0 0 0 2px rgba(42,107,130,.25);}
-body.edit-mode .event-card{border-style:dashed;}
-body.edit-mode .time-text::after,
-body.edit-mode .event-title::after{content:' ✎';font-size:9px;opacity:.3;}
-.save-toast{position:fixed;bottom:80px;right:24px;z-index:1000;background:#3a7a59;color:#fff;font-size:13px;padding:10px 18px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.15);opacity:0;transition:opacity .3s;pointer-events:none;}
-.save-toast.show{opacity:1;}
-
-/* ── ICON PICKER ── */
-.icon-picker{position:fixed;z-index:2000;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;box-shadow:0 8px 32px rgba(0,0,0,.15);display:none;max-width:300px;}
-.icon-picker.open{display:block;}
-.icon-picker-title{font-size:11px;font-family:var(--mono);letter-spacing:1px;color:var(--muted);margin-bottom:8px;}
-.icon-grid{display:flex;flex-wrap:wrap;gap:4px;max-height:200px;overflow-y:auto;}
-.icon-opt{font-size:20px;padding:5px 7px;border-radius:6px;cursor:pointer;transition:background .15s;line-height:1;}
-.icon-opt:hover{background:var(--ocean-pale);}
-.icon-picker-close{position:absolute;top:8px;right:10px;font-size:14px;color:var(--muted);cursor:pointer;line-height:1;}
-
-/* ── NEW ITEM MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:3000;display:none;align-items:center;justify-content:center;}
-.modal-overlay.open{display:flex;}
-.modal{background:#fff;border-radius:14px;padding:28px;width:min(480px,90vw);box-shadow:0 12px 40px rgba(0,0,0,.2);}
-.modal h3{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);margin-bottom:20px;}
-.modal-field{margin-bottom:14px;}
-.modal-field label{display:block;font-size:12px;font-family:var(--mono);letter-spacing:1px;color:var(--muted);margin-bottom:5px;}
-.modal-field input,.modal-field textarea,.modal-field select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--ink);background:var(--white);outline:none;transition:border-color .2s;}
-.modal-field input:focus,.modal-field textarea:focus,.modal-field select:focus{border-color:var(--ocean-mid);}
-.modal-field textarea{resize:vertical;min-height:72px;}
-.modal-icon-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
-.modal-icon-opt{font-size:20px;padding:5px 8px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
-.modal-icon-opt:hover{background:var(--ocean-pale);}
-.modal-icon-opt.selected{border-color:var(--ocean-mid);background:var(--ocean-pale);}
-.modal-btns{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
-.modal-btn{padding:9px 20px;border-radius:20px;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:500;transition:all .2s;}
-.modal-btn.primary{background:var(--ocean);color:#fff;}
-.modal-btn.primary:hover{background:var(--ocean-mid);}
-.modal-btn.secondary{background:var(--sand);color:var(--ink);}
-.modal-btn.secondary:hover{background:var(--sand-dark);color:#fff;}
-
-/* NEW DAY MODAL */
-.new-day-modal{background:#fff;border-radius:14px;padding:28px;width:min(380px,90vw);box-shadow:0 12px 40px rgba(0,0,0,.2);}
-.new-day-modal h3{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);margin-bottom:20px;}
-
-@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
-@media(max-width:600px){
-  .hero{padding:50px 20px 52px;}
-  .day-tab{padding:12px 12px;font-size:13px;}
-  .timeline::before{left:52px;}
-  .timeline-item{grid-template-columns:52px 1fr;gap:0 14px;}
-  .day-number-big{font-size:44px;}
-  .meta-divider{display:none;}
-  .fee-label{min-width:90px;}
-  .add-item-btn{margin-left:66px;width:calc(100% - 66px);}
-  .edit-bar{bottom:12px;right:12px;}
-}
+body{background:var(--white);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6;}
+#app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:480px 1fr;height:100vh;overflow:hidden;position:relative;}
+@media(max-width:1024px){#app{grid-template-columns:1fr;grid-template-rows:auto 400px;height:auto;overflow:visible;}}
+.sidebar{background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto;position:relative;z-index:10;}
+@media(max-width:1024px){.sidebar{height:auto;max-height:none;overflow-y:visible;}}
+.header{padding:40px 32px 32px 32px;border-bottom:1px solid var(--ocean-pale);background:linear-gradient(to bottom, var(--ocean-pale) 0%, var(--white) 100%);}
+.header-meta{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--ocean-mid);margin-bottom:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
+.header-meta span::before{content:"•";margin-right:8px;color:var(--coral);}
+h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ocean);line-height:1.25;letter-spacing:-0.5px;}
+.subtitle{font-size:14px;color:var(--muted);margin-top:8px;font-weight:300;}
+.timeline{padding:24px 32px 40px 32px;flex:1;}
+.day-section{margin-bottom:40px;position:relative;}
+.day-section:last-child{margin-bottom:0;}
+.day-title{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ocean);padding-bottom:12px;margin-bottom:20px;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:8px;}
+.day-title .date{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400;}
+.timeline-items{position:relative;padding-left:24px;}
+.timeline-items::before{content:"";position:absolute;left:4px;top:8px;bottom:8px;width:1px;background:var(--border);}
+.item{position:relative;margin-bottom:28px;}
+.item:last-child{margin-bottom:0;}
+.item-dot{position:absolute;left:-24px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--white);border:2px solid var(--ocean-mid);transition:all 0.3s ease;z-index:2;}
+.item:hover .item-dot{background:var(--coral);border-color:var(--coral);transform:scale(1.2);}
+.item-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--coral);line-height:1;margin-bottom:4px;}
+.item-title{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4;}
+.item-desc{font-size:13px;color:var(--muted);margin-top:4px;font-weight:300;line-height:1.5;}
+.item-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;margin-top:6px;text-transform:uppercase;letter-spacing:0.5px;}
+.tag-food{background:var(--sunrise-light);color:var(--sunrise);}
+.tag-stay{background:var(--coral-light);color:var(--coral);}
+.tag-spot{background:var(--ocean-pale);color:var(--ocean-mid);}
+.map-container{position:relative;width:100%;height:100%;background:var(--sand);}
+@media(max-width:1024px){.map-container{height:400px;}}
+#naverMap{width:100%;height:100%;}
+.map-overlay-card{position:absolute;bottom:24px;right:24px;background:rgba(255,253,250,0.95);padding:16px 20px;border-radius:8px;box-shadow:0 12px 32px rgba(26,37,48,0.08);backdrop-filter:blur(8px);border:1px solid rgba(214,232,239,0.5);z-index:20;max-width:320px;pointer-events:auto;}
+.overlay-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ocean);margin-bottom:4px;}
+.overlay-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--ocean-pale);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--border);}
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-bg-circle circle-1"></div>
-  <div class="hero-bg-circle circle-2"></div>
-  <div class="trip-type">✦ Couple Trip · 1박 2일</div>
-  <h1>강원도 <em>묵호항</em><br>여행 일정표</h1>
-  <p class="hero-sub">파도 소리와 항구 냄새, 그리고 당신과 함께</p>
-  <div class="hero-meta">
-    <div class="meta-item"><span class="meta-label">출발지</span><span class="meta-value">부천 금강마을주공4단지</span></div>
-    <div class="meta-divider"></div>
-    <div class="meta-item"><span class="meta-label">목적지</span><span class="meta-value">동해시 묵호항 · 삼척</span></div>
-    <div class="meta-divider"></div>
-    <div class="meta-item"><span class="meta-label">숙소</span><span class="meta-value">삼척 준펜션 🌊</span></div>
+<div id="app">
+  <div class="sidebar">
+    <div class="header">
+      <div class="header-meta">1박 2일 여행<span>Mukho Trip</span></div>
+      <h1>푸른 바다와<br>유산의 도시, 동해</h1>
+      <div class="subtitle">묵호항 중심의 감성 여행 코스 가이드</div>
+    </div>
+
+    <div class="timeline">
+      <div class="day-section">
+        <div class="day-title">Day 01 <span class="date">바다와 감성의 시작</span></div>
+        <div class="timeline-items">
+          <div class="item">
+            <div class="item-dot"></div>
+            <div class="item-time">13:30</div>
+            <div class="item-title">묵호역 도착 및 이동</div>
+            <div class="item-desc">설레는 동해 여행의 시작점. 묵호역에서 나와 바다 내음을 마시며 여정을 시작합니다.</div>
+          </div>
+          <div class="item">
+            <div class="item-dot"></div>
+            <div class="item-time">14:00</div>
+            <div class="item-title">논골담길 산책</div>
+            <div class="item-desc">소박한 골목길 벽화와 주민들의 이야기가 담긴 감성 명소. 느린 걸음으로 걸어 올라갑니다.</div>
+            <span class="item-tag tag-spot">Spot</span>
+          </div>
+          <div class="item">
+            <div class="item-dot"></div>
+            <div class="item-time">15:30</div>
+            <div class="item-title">묵호등대 & 도째비골 스카이밸리</div>
+            <div class="item-desc">동해바다가 한눈에 내려다보이는 시원한 전망과 짜릿한 스카이워크 체험을 동시에 즐깁니다.</div>
+            <span class="item-tag tag-spot">Spot</span>
+          </div>
+          <div class="item">
+            <div class="item-dot"></div>
+            <div class="item-time">17:00</div>
+            <div class="item-title">카라멜 스테이션 카페</div>
+            <div class="item-desc">독특한 인테리어와 시그니처 음료가 있는 힙한 감성 공간에서 잠시 휴식과 담소를 나눕니다.</div>
+            <span class="item-tag tag-food">Cafe</span>
+          </div>
+          <div class="item">
+            <div class="item-dot"></div>
+            <div class="item-time">18:30</div>
+            <div class="item-title">삼척 준펜션 체크인 및 휴식</div>
+            <div class="item-desc">안락하고 깨끗한 숙소에서 여독을 풀고 맛있는 저녁 식사와 함께 하루를 마무리합니다.</div>
+            <span class="item-tag tag-stay">Stay</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-section">
+        <div class="day-title">Day 02 <span class="date">자연의 신비와 여운</span></div>
+        <div class="timeline-items">
+          <div class="item">
+            <div class="item-dot"></div>
+            <div class="item-time">10:00</div>
+            <div class="item-title">숙소 체크아웃</div>
+            <div class="item-desc">정든 숙소를 정리하고 둘째 날의 새로운 여정을 향해 출발합니다.</div>
+          </div>
+          <div class="item">
+            <div class="item-dot"></div>
+            <div class="item-time">10:30</div>
+            <div class="item-title">추암 촛대바위</div>
+            <div class="item-desc">동해의 보석, 애국가 첫 소절의 배경화면으로 유명한 신비로운 기암괴석과 출렁다리를 감상합니다.</div>
+            <span class="item-tag tag-spot">Spot</span>
+          </div>
+          <div class="item">
+            <div class="item-dot"></div>
+            <div class="item-time">13:00</div>
+            <div class="item-title">묵호역 복귀 및 해산</div>
+            <div class="item-desc">즐거웠던 기억을 안고 다시 묵호역으로 돌아와 여정을 마무리합니다. 다음에 또 만나요!</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="hero-waves"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="#fdfcfa"/></svg></div>
-</div>
 
-
-<!-- MAP SECTION -->
-<div class="container">
-  <div class="tips-section" style="margin-top:32px;">
-    <div class="tips-header">✦ 여행 지도</div>
-    <div id="naverMap" style="width:100%;height:420px;border-radius:12px;overflow:hidden;"></div>
-    <p style="margin-top:12px;font-size:12px;color:var(--muted);line-height:1.7;">
-      ※ 지도가 보이지 않으면 아래 script의 YOUR_KAKAO_JAVASCRIPT_KEY 부분에 카카오맵 JavaScript 키를 입력하세요.
-    </p>
-  </div>
-</div>
-
-<div class="container">
-  <!-- TABS -->
-  <div class="day-tabs" id="dayTabs">
-    <div class="day-tab active" data-day="1" onclick="switchDay(1)">
-      <span>DAY 01</span>묵호 관광 &amp; 삼척 이동
-      <div class="del-day" onclick="deleteDay(event,1)" title="이 날 삭제">✕</div>
-    </div>
-    <div class="day-tab" data-day="2" onclick="switchDay(2)">
-      <span>DAY 02</span>일출 &amp; 촛대바위 귀가
-      <div class="del-day" onclick="deleteDay(event,2)" title="이 날 삭제">✕</div>
-    </div>
-    <button class="add-day-btn" onclick="openNewDayModal()">+ 날짜 추가</button>
-  </div>
-
-  <!-- ═══ DAY 1 ═══ -->
-  <div class="day-panel active" id="panel-1">
-    <div class="day-intro">
-      <div class="day-number-big">01</div>
-      <div class="day-intro-text">
-        <h2>논골담길 &amp; 묵호항, 그리고 삼척으로</h2>
-        <p>부천에서 묵호까지 달려와 골목과 등대를 걷고, 칼국수로 배를 채운 뒤<br>카라멜스테이션에서 쉬고 도째비골에서 짜릿하게 — 저녁엔 삼척으로 이동.</p>
-      </div>
-    </div>
-    <div class="timeline" id="timeline-1">
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">06:30</span><div class="time-dot accent"></div></div>
-        <div class="event-card move">
-          <div class="card-controls"><span class="drag-handle" title="드래그해서 순서 변경">⠿</span><span class="clone-item" onclick="cloneItem(this)" title="복제">⧉</span><span class="collapse-item" onclick="toggleCollapse(this)" title="접기">—</span><span class="delete-item" onclick="deleteItem(this)" title="삭제">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🚗</span>부천 출발 → 묵호항</span>
-            <span class="event-type-badge badge-move">이동</span>
-          </div>
-          <p class="event-desc">부천 금강마을주공4단지 출발. 중동IC → 수도권제1순환고속도로 → 영동고속도로(강릉 방향) → 강릉분기점 → 동해고속도로 → 묵호IC.</p>
-          <div class="event-tags">
-            <span class="tag">📍 부천 금강마을주공4단지</span><span class="tag">약 230km</span><span class="tag">예상 2시간 40분</span><span class="tag">도착 약 09:10</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">07:50</span><div class="time-dot"></div></div>
-        <div class="event-card move">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">☕</span>여주휴게소 (영동고속도로 강릉 방향)</span>
-            <span class="event-type-badge badge-move">휴게소</span>
-          </div>
-          <p class="event-desc">출발 약 1시간 20분 지점. 스트레칭·커피 한 잔 후 재출발. 이후 횡성·평창·대관령을 넘으면 묵호까지 약 1시간 20분 추가 소요.</p>
-          <div class="event-tags"><span class="tag">영동고속도로 강릉방향</span><span class="tag">⭐ 느타리버섯크림가락국수 8,500원</span><span class="tag">주유소 · 편의점</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">09:10</span><div class="time-dot accent"></div></div>
-        <div class="event-card move">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🅿️</span>묵호 도착 — 묵호항 공영주차장</span>
-            <span class="event-type-badge badge-parking">주차</span>
-          </div>
-          <p class="event-desc">묵호IC 도착 후 묵호항 공영주차장으로 바로 이동. 논골담길·등대·수산시장 모두 도보권.</p>
-          <div class="fee-table">
-            <div class="fee-row"><span class="fee-label">📍 위치</span><span class="fee-value">강원 동해시 발한동 4-51 (묵호119센터 앞)</span></div>
-            <div class="fee-row"><span class="fee-label">💰 요금</span><span class="fee-value free">무료 — 총 214면 (대형 25면 포함)</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">09:30</span><div class="time-dot accent"></div></div>
-        <div class="event-card spot">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🎨</span>논골담길 &amp; 묵호등대 산책</span>
-            <span class="event-type-badge badge-spot">관광</span>
-          </div>
-          <p class="event-desc">오전이라 사람 적고 사진도 잘 나옴. 벽화 골목을 따라 언덕을 오르면 묵호등대까지 이어짐. 등대 전망대에서 360° 동해 파노라마 감상. 총 약 1~1.5시간 코스.</p>
-          <div class="event-tags"><span class="tag">📸 포토스팟</span><span class="tag">논골담길 ⭐ 4.4</span><span class="tag">묵호등대 ⭐ 4.6</span><span class="tag green">무료 입장</span><span class="tag">09:00~17:00</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">11:00</span><div class="time-dot highlight"></div></div>
-        <div class="event-card food">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🍜</span>점심 — 칼국수 맛집 선택</span>
-            <span class="event-type-badge badge-food">식사</span>
-          </div>
-          <p class="event-desc">논골담길에서 내려오면 묵호역·수산시장 근처. 아래 세 곳 중 취향껏!</p>
-          <div class="choice-box">
-            <strong>▸ 선택지 (1곳 선택)</strong>
-            <div class="choice-item">초당쫄면순두부 — 쫄면 들어간 순두부찌개 시그니처, ⭐ 4.4, 11:00 오픈 직후 입장 추천</div>
-            <div class="choice-item">오뚜기칼국수 — 묵호 로컬 단골 손칼국수, 진한 국물 스타일</div>
-            <div class="choice-item">대우칼국수 — 맑고 깔끔한 국물, 현지인 추천 오래된 맛집</div>
-          </div>
-          <div class="event-tags" style="margin-top:10px"><span class="tag">11:00 오픈 직후 도착 추천</span><span class="tag">12:30 전 마무리</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">12:30</span><div class="time-dot cafe-dot"></div></div>
-        <div class="event-card cafe">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">☕</span>카라멜스테이션</span>
-            <span class="event-type-badge badge-cafe">카페</span>
-          </div>
-          <p class="event-desc">1980년대 낡은 여관 '성빈장'을 리모델링한 복합문화공간. 묵호역에서 100m 거리. 갈색 벽돌 외관과 아늑한 내부. 지하 1층 공간도 꼭 내려가볼 것.</p>
-          <div class="choice-box purple-box">
-            <strong>▸ 시그니처 메뉴</strong>
-            <div class="choice-item">콘수수커피 — 달달하고 고소한 대표 시그니처</div>
-            <div class="choice-item">카라멜 그림커피 — 카라멜 향 가득한 인기 음료</div>
-          </div>
-          <div class="event-tags" style="margin-top:10px"><span class="tag"><a href="https://map.naver.com/v5/search/동해시 발한로 219-11" target="_blank" style="text-decoration:none;color:inherit;">📍 네이버지도</a></span><span class="tag purple">묵호역 100m</span><span class="tag">11:00~18:00</span><span class="tag green">앞 공터 무료 주차</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">13:30</span><div class="time-dot fun-dot"></div></div>
-        <div class="event-card fun">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🎢</span>도째비골 스카이밸리</span>
-            <span class="event-type-badge badge-fun">체험</span>
-          </div>
-          <p class="event-desc">묵호등대 바로 옆, 동해 바다를 배경으로 한 스릴 체험. 스카이워크 + 스카이사이클(왕복 179m) + 자이언트슬라이드(높이 27m) 세 가지 모두 체험 예정. 12~13시 점검 시간이므로 13:30 이후 입장 추천.</p>
-          <div class="fee-table" style="margin-top:10px">
-            <div class="fee-row"><span class="fee-label">🎟️ 입장료</span><span class="fee-value paid">성인 3,000원 / 인</span></div>
-            <div class="fee-row"><span class="fee-label">🚴 스카이사이클</span><span class="fee-value paid">15,000원 / 인</span></div>
-            <div class="fee-row"><span class="fee-label">🛝 자이언트슬라이드</span><span class="fee-value paid">3,000원 / 인</span></div>
-            <div class="fee-row"><span class="fee-label">💰 2인 합계 예상</span><span class="fee-value paid">약 42,000원</span></div>
-            <div class="fee-row"><span class="fee-label">🅿️ 주차</span><span class="fee-value free">무료</span></div>
-          </div>
-          <div class="event-tags" style="margin-top:10px"><span class="tag">📍 묵호진동 2-109</span><span class="tag orange">10:00~18:00</span><span class="tag red">월요일 휴장</span><span class="tag">12~13시 점검</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">15:30</span><div class="time-dot highlight"></div></div>
-        <div class="event-card food">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🦀</span>이른 저녁 — 착한대게</span>
-            <span class="event-type-badge badge-food">식사</span>
-          </div>
-          <p class="event-desc">삼척 이동 전 묵호에서 저녁 해결. 제철 대게·회 세트. 16~17시 사이 식사 마무리 목표. 전화 예약 필수.</p>
-          <div class="event-tags"><span class="tag">대게 · 회</span><span class="tag">⭐ 4.3</span><span class="tag red">전화 예약 필수</span><span class="tag">17:00 전 마무리</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">17:00</span><div class="time-dot accent"></div></div>
-        <div class="event-card move">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🚗</span>묵호 → 삼척 준펜션 이동</span>
-            <span class="event-type-badge badge-move">이동</span>
-          </div>
-          <p class="event-desc">묵호항에서 삼척 준펜션까지 동해안 해안도로를 따라 약 20~30분.</p>
-          <div class="event-tags"><span class="tag">묵호 → 삼척</span><span class="tag">약 20~30분</span><span class="tag">해안도로 드라이브</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">18:00+</span><div class="time-dot"></div></div>
-        <div class="event-card stay">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🏡</span>삼척 준펜션 체크인</span>
-            <span class="event-type-badge badge-stay">숙박</span>
-          </div>
-          <p class="event-desc">삼척 준펜션 체크인. 짐 풀고 편하게 쉬며 하루 마무리. 내일 새벽 일출을 위해 일찍 취침 권장. 바다 소리 들으며 느긋한 밤 🌊</p>
-          <div class="event-tags"><span class="tag">📍 삼척 준펜션</span><span class="tag">18:00 이후 체크인</span><span class="tag">조기 취침 권장</span></div>
-        </div>
-      </div>
-
-    </div>
-    <button class="add-item-btn" onclick="openNewItemModal(1)">＋ 새 일정 추가</button>
-  </div><!-- /panel-1 -->
-
-  <!-- ═══ DAY 2 ═══ -->
-  <div class="day-panel" id="panel-2">
-    <div class="day-intro">
-      <div class="day-number-big">02</div>
-      <div class="day-intro-text">
-        <h2>일출과 추암 촛대바위, 그리고 귀가</h2>
-        <p>동해의 가장 극적인 순간 — 수평선 위로 솟아오르는 태양과<br>바다에서 우뚝 선 기암절벽. 강원도의 진짜 얼굴을 보고 돌아오는 날.</p>
-      </div>
-    </div>
-    <div class="timeline" id="timeline-2">
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">05:00</span><div class="time-dot sunrise-dot"></div></div>
-        <div class="event-card sunrise-card">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">☀️</span>일출 감상</span>
-            <span class="event-type-badge badge-sunrise">일출</span>
-          </div>
-          <p class="event-desc">삼척 준펜션에서 바다를 바라보며 맞이하는 동해 일출. 5~6월 기준 5시 20분대. 이불 덮고 창가에서 봐도 충분히 낭만적.</p>
-          <div class="event-tags"><span class="tag">5:20 일출 예상 (5~6월 기준)</span><span class="tag red">전날 기상 확인 필수</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">08:00</span><div class="time-dot"></div></div>
-        <div class="event-card food">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">☕</span>아침 식사 &amp; 체크아웃</span>
-            <span class="event-type-badge badge-food">식사</span>
-          </div>
-          <p class="event-desc">숙소 주변 편의점이나 근처 베이커리 카페에서 간단하게. 체크아웃 11시 전. 짐 차에 싣고 오전 일정 시작.</p>
-          <div class="event-tags"><span class="tag">체크아웃 11:00</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">10:00</span><div class="time-dot accent"></div></div>
-        <div class="event-card spot">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🗿</span>추암 촛대바위</span>
-            <span class="event-type-badge badge-spot">관광</span>
-          </div>
-          <p class="event-desc">강원도를 대표하는 절경. 거대한 기암들이 바다에서 솟아오른 풍경이 압도적. 해안 둘레길 산책 약 1시간 코스.</p>
-          <div class="event-tags"><span class="tag">⭐ 4.4 / 리뷰 1만+</span><span class="tag green">무료 입장</span><span class="tag green">주차 무료</span><span class="tag">🦑 오징어 구이 추천</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">12:00</span><div class="time-dot highlight"></div></div>
-        <div class="event-card food">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🐟</span>점심 — 생선구이 로컬 맛집</span>
-            <span class="event-type-badge badge-food">식사</span>
-          </div>
-          <p class="event-desc">수산시장 뒤 골목 숨은 찐 로컬 맛집으로 마지막 끼.</p>
-          <div class="choice-box">
-            <strong>▸ 선택지</strong>
-            <div class="choice-item">평강식당 — 시장에서 생선 직접 사와서 조리 가능한 방식, ⭐ 5.0</div>
-            <div class="choice-item">묵호식당 — 고등어·가자미 구이 정식 세트 13,000원, ⭐ 4.3</div>
-          </div>
-          <div class="event-tags" style="margin-top:10px"><span class="tag">생선구이 정식</span><span class="tag">가성비 맛집</span></div>
-        </div>
-      </div>
-
-      <div class="timeline-item" draggable="true">
-        <div class="time-col"><span class="time-text">13:30</span><div class="time-dot accent"></div></div>
-        <div class="event-card move">
-          <div class="card-controls"><span class="drag-handle">⠿</span><span class="delete-item" onclick="deleteItem(this)">✕</span></div>
-          <div class="event-top">
-            <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">🛍️</span>묵호 수산시장 쇼핑 &amp; 귀가</span>
-            <span class="event-type-badge badge-move">귀가</span>
-          </div>
-          <p class="event-desc">마지막으로 수산시장에서 반건조 오징어·명태·황태포 등 현지 가격으로 쇼핑. 14~15시 출발하면 부천 저녁 전 도착.</p>
-          <div class="event-tags"><span class="tag">오징어 · 황태 · 명태</span><span class="tag">현지 가격</span><span class="tag">부천 17:30~18:00 도착 예상</span></div>
-        </div>
-      </div>
-
-    </div>
-    <button class="add-item-btn" onclick="openNewItemModal(2)">＋ 새 일정 추가</button>
-  </div><!-- /panel-2 -->
-
-  <!-- TIPS -->
-  <div class="tips-section">
-    <div class="tips-header">✦ 여행 꿀팁</div>
-    <div class="tips-grid">
-      <div class="tip-item"><div class="tip-icon">🅿️</div><p class="tip-text">묵호항 공영주차장(119센터 앞) <strong>무료 214면</strong>. 여기 한 곳 주차하고 하루 다 걸어다닐 수 있음.</p></div>
-      <div class="tip-item"><div class="tip-icon">👟</div><p class="tip-text">논골담길은 경사가 꽤 있음. <strong>편한 운동화 필수</strong>. 샌들로는 힘듦.</p></div>
-      <div class="tip-item"><div class="tip-icon">🎢</div><p class="tip-text">도째비골 <strong>12~13시 점검 시간</strong> 피해 13:30 이후 입장. 기상 악화 시 체험 중단 가능.</p></div>
-      <div class="tip-item"><div class="tip-icon">🦀</div><p class="tip-text">착한대게는 <strong>전화 예약 필수</strong>. 성수기 대기 길어지므로 미리 예약하면 바로 입장.</p></div>
-      <div class="tip-item"><div class="tip-icon">☀️</div><p class="tip-text">일출 전날 <strong>기상 앱 확인</strong>. 흐려도 숙소 창가에서 바다 소리 들으며 충분히 낭만.</p></div>
-      <div class="tip-item"><div class="tip-icon">🦑</div><p class="tip-text">묵호 수산시장 <strong>반건조 오징어</strong>는 현지 가격으로 저렴. 귀가 전 필수 쇼핑.</p></div>
+  <div class="map-container">
+    <div id="naverMap"></div>
+    <div class="map-overlay-card">
+      <div class="overlay-title">동선 가이드</div>
+      <div class="overlay-desc">묵호항의 핵심 감성 스폿부터 편안한 숙소, 삼척의 명소까지 이어지는 최적의 루트입니다.</div>
     </div>
   </div>
 </div>
 
-<div class="page-footer">
-  <em>묵호항 &amp; 삼척 1박 2일</em> &nbsp;·&nbsp; 부천 출발 · 동해시 묵호 · 삼척 준펜션
-</div>
-
-<!-- ── 편집 바 ── -->
-<div class="edit-bar">
-  <button class="edit-btn btn-cancel" onclick="cancelEdit()">✕ 취소</button>
-  <button class="edit-btn btn-save"   onclick="saveEdit()">✓ 저장 완료</button>
-  <button class="edit-btn dark-toggle" onclick="toggleDarkMode()">🌙 다크모드</button><button class="edit-btn btn-edit"   onclick="startEdit()">✏️ 직접 수정하기</button>
-</div>
-<div class="edit-hint">✎ 시간·제목·설명·태그를 클릭해서 바로 수정 — 완료 후 [저장 완료]</div>
-<div class="save-toast" id="saveToast">✓ 저장됐어요!</div>
-
-<!-- ── 아이콘 피커 ── -->
-<div class="icon-picker" id="iconPicker">
-  <div class="icon-picker-close" onclick="closeIconPicker()">✕</div>
-  <div class="icon-picker-title">아이콘 선택</div>
-  <div class="icon-grid" id="iconGrid"></div>
-</div>
-
-<!-- ── 새 일정 모달 ── -->
-<div class="modal-overlay" id="newItemModal">
-  <div class="modal">
-    <h3>새 일정 추가</h3>
-    <div class="modal-field">
-      <label>시간</label>
-      <input type="text" id="ni-time" placeholder="예: 14:00">
-    </div>
-    <div class="modal-field">
-      <label>아이콘 선택</label>
-      <div class="modal-icon-row" id="niIconRow"></div>
-    </div>
-    <div class="modal-field">
-      <label>제목</label>
-      <input type="text" id="ni-title" placeholder="일정 제목을 입력하세요">
-    </div>
-    <div class="modal-field">
-      <label>카드 유형</label>
-      <select id="ni-type">
-        <option value="move">이동</option>
-        <option value="food">식사</option>
-        <option value="spot">관광</option>
-        <option value="stay">숙박</option>
-        <option value="cafe">카페</option>
-        <option value="fun">체험</option>
-        <option value="sunrise-card">일출</option>
-      </select>
-    </div>
-    <div class="modal-field">
-      <label>설명</label>
-      <textarea id="ni-desc" placeholder="일정 내용을 입력하세요"></textarea>
-    </div>
-    <div class="modal-field">
-      <label>태그 (쉼표로 구분)</label>
-      <input type="text" id="ni-tags" placeholder="예: 무료 입장, ⭐ 4.5, 추천">
-    </div>
-    <div class="modal-btns">
-      <button class="modal-btn secondary" onclick="closeNewItemModal()">취소</button>
-      <button class="modal-btn primary" onclick="addNewItem()">추가하기</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── 새 날짜 모달 ── -->
-<div class="modal-overlay" id="newDayModal">
-  <div class="new-day-modal">
-    <h3>새 날짜 추가</h3>
-    <div class="modal-field">
-      <label>탭 제목</label>
-      <input type="text" id="nd-title" placeholder="예: 속초 관광 &amp; 귀가">
-    </div>
-    <div class="modal-field">
-      <label>Day 소개 (한 줄)</label>
-      <input type="text" id="nd-intro" placeholder="예: 속초에서의 마지막 여행">
-    </div>
-    <div class="modal-btns">
-      <button class="modal-btn secondary" onclick="closeNewDayModal()">취소</button>
-      <button class="modal-btn primary" onclick="addNewDay()">추가하기</button>
-    </div>
-  </div>
-</div>
-
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_JAVASCRIPT_KEY&libraries=services"></script>
 <script>
-/* ── 상태 ── */
-let currentDay = 1;
-let dayCount = 2;
-let activeIconTarget = null;
-let selectedModalIcon = '📌';
-let currentItemDay = 1;
-let editBackup = {};
-
-const ICONS = [
-  '🚗','🚌','🚂','✈️','🛳️','🚶','🚴',
-  '☕','🍜','🍲','🐟','🦀','🍱','🍦','🍺',
-  '🎨','🏮','🗿','🌊','🏖️','⛰️','🌸','🌅',
-  '☀️','🌙','🌧️','⛅',
-  '🏡','🛏️','🏨','⛺',
-  '🅿️','🛍️','🎢','🎡','🎠','🎯','🎸',
-  '📸','💊','🔦','🧭','📍','⭐','❤️','🌟',
-  '🦑','🦞','🦐','🐙','🐠','🌺','🍃','🌴',
-];
-
-const TYPE_BADGE = {
-  move:'badge-move', food:'badge-food', spot:'badge-spot',
-  stay:'badge-stay', cafe:'badge-cafe', fun:'badge-fun', 'sunrise-card':'badge-sunrise'
-};
-const TYPE_LABEL = {
-  move:'이동', food:'식사', spot:'관광', stay:'숙박', cafe:'카페', fun:'체험', 'sunrise-card':'일출'
-};
-
-/* ── 탭 전환 ── */
-function switchDay(n) {
-  currentDay = n;
-  document.querySelectorAll('.day-tab').forEach(t => t.classList.toggle('active', +t.dataset.day === n));
-  document.querySelectorAll('.day-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + n));
-  document.querySelectorAll('#panel-' + n + ' .timeline-item').forEach(el => {
-    el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
-  });
-}
-
-/* ── 날짜 삭제 ── */
-function deleteDay(e, n) {
-  e.stopPropagation();
-  const panels = document.querySelectorAll('.day-panel');
-  if (panels.length <= 1) { alert('최소 1개의 날짜는 있어야 해요.'); return; }
-  if (!confirm('DAY ' + n + ' 일정을 삭제할까요?')) return;
-  document.querySelector('.day-tab[data-day="' + n + '"]').remove();
-  document.getElementById('panel-' + n).remove();
-  const remaining = document.querySelector('.day-tab');
-  if (remaining) switchDay(+remaining.dataset.day);
-}
-
-/* ── 새 날짜 모달 ── */
-function openNewDayModal() {
-  document.getElementById('newDayModal').classList.add('open');
-  document.getElementById('nd-title').focus();
-}
-function closeNewDayModal() { document.getElementById('newDayModal').classList.remove('open'); }
-function addNewDay() {
-  const title = document.getElementById('nd-title').value.trim() || '새 날짜';
-  const intro = document.getElementById('nd-intro').value.trim() || '새로운 여행 일정';
-  dayCount++;
-  const n = dayCount;
-
-  // 탭 추가
-  const tab = document.createElement('div');
-  tab.className = 'day-tab';
-  tab.dataset.day = n;
-  tab.onclick = () => switchDay(n);
-  tab.innerHTML = `<span>DAY ${String(n).padStart(2,'0')}</span>${title}<div class="del-day" onclick="deleteDay(event,${n})" title="이 날 삭제">✕</div>`;
-  document.getElementById('dayTabs').insertBefore(tab, document.querySelector('.add-day-btn'));
-
-  // 패널 추가
-  const panel = document.createElement('div');
-  panel.className = 'day-panel';
-  panel.id = 'panel-' + n;
-  panel.innerHTML = `
-    <div class="day-intro">
-      <div class="day-number-big">${String(n).padStart(2,'0')}</div>
-      <div class="day-intro-text">
-        <h2>${title}</h2>
-        <p>${intro}</p>
-      </div>
-    </div>
-    <div class="timeline" id="timeline-${n}"></div>
-    <button class="add-item-btn" onclick="openNewItemModal(${n})">＋ 새 일정 추가</button>`;
-  document.querySelector('.tips-section').closest('.container').insertBefore(panel, document.querySelector('.tips-section'));
-
-  initDrag(document.getElementById('timeline-' + n));
-  closeNewDayModal();
-  switchDay(n);
-  document.getElementById('nd-title').value = '';
-  document.getElementById('nd-intro').value = '';
-}
-
-/* ── 일정 삭제 ── */
-function deleteItem(btn) {
-  const item = btn.closest('.timeline-item');
-  if (!confirm('이 일정을 삭제할까요?')) return;
-  item.remove();
-}
-
-/* ── 새 일정 모달 ── */
-function openNewItemModal(day) {
-  currentItemDay = day;
-  selectedModalIcon = '📌';
-  renderModalIcons();
-  document.getElementById('newItemModal').classList.add('open');
-  document.getElementById('ni-time').focus();
-}
-function closeNewItemModal() { document.getElementById('newItemModal').classList.remove('open'); }
-
-function renderModalIcons() {
-  const row = document.getElementById('niIconRow');
-  row.innerHTML = ICONS.map(ic =>
-    `<span class="modal-icon-opt${ic===selectedModalIcon?' selected':''}" onclick="selectModalIcon('${ic}')">${ic}</span>`
-  ).join('');
-}
-function selectModalIcon(ic) {
-  selectedModalIcon = ic;
-  renderModalIcons();
-}
-
-function addNewItem() {
-  const time  = document.getElementById('ni-time').value.trim() || '--:--';
-  const title = document.getElementById('ni-title').value.trim() || '새 일정';
-  const type  = document.getElementById('ni-type').value;
-  const desc  = document.getElementById('ni-desc').value.trim();
-  const tagsRaw = document.getElementById('ni-tags').value.trim();
-  const tags  = tagsRaw ? tagsRaw.split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('') : '';
-
-  const item = document.createElement('div');
-  item.className = 'timeline-item';
-  item.draggable = true;
-  item.style.opacity = '1';
-  item.style.transform = 'none';
-  item.innerHTML = `
-    <div class="time-col"><span class="time-text">${time}</span><div class="time-dot accent"></div></div>
-    <div class="event-card ${type}">
-      <div class="card-controls">
-        <span class="drag-handle" title="드래그해서 순서 변경">⠿</span>
-        <span class="delete-item" onclick="deleteItem(this)" title="삭제">✕</span>
-      </div>
-      <div class="event-top">
-        <span class="event-title"><span class="title-icon" onclick="openIconPicker(this)">${selectedModalIcon}</span>${title}</span>
-        <span class="event-type-badge ${TYPE_BADGE[type]}">${TYPE_LABEL[type]}</span>
-      </div>
-      ${desc ? `<p class="event-desc">${desc}</p>` : ''}
-      ${tags ? `<div class="event-tags">${tags}</div>` : ''}
-    </div>`;
-
-  document.getElementById('timeline-' + currentItemDay).appendChild(item);
-  bindDragEvents(item);
-
-  // 편집 모드 중이면 새 아이템도 편집 가능하게
-  if (document.body.classList.contains('edit-mode')) {
-    item.querySelectorAll(EDITABLE_SEL).forEach(el => el.setAttribute('contenteditable','true'));
-  }
-
-  closeNewItemModal();
-  ['ni-time','ni-title','ni-desc','ni-tags'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('ni-type').value = 'move';
-}
-
-/* ── 아이콘 피커 ── */
-function openIconPicker(iconEl) {
-  activeIconTarget = iconEl;
-  const grid = document.getElementById('iconGrid');
-  grid.innerHTML = ICONS.map(ic =>
-    `<span class="icon-opt" onclick="pickIcon('${ic}')">${ic}</span>`
-  ).join('');
-  const picker = document.getElementById('iconPicker');
-  picker.classList.add('open');
-  const r = iconEl.getBoundingClientRect();
-  const pw = 300, ph = 260;
-  let top  = r.bottom + window.scrollY + 8;
-  let left = r.left  + window.scrollX;
-  if (left + pw > window.innerWidth - 16) left = window.innerWidth - pw - 16;
-  if (top  + ph > window.scrollY + window.innerHeight) top = r.top + window.scrollY - ph - 8;
-  picker.style.top  = top  + 'px';
-  picker.style.left = left + 'px';
-}
-function pickIcon(ic) {
-  if (activeIconTarget) activeIconTarget.textContent = ic;
-  closeIconPicker();
-}
-function closeIconPicker() {
-  document.getElementById('iconPicker').classList.remove('open');
-  activeIconTarget = null;
-}
-document.addEventListener('click', e => {
-  if (!e.target.closest('#iconPicker') && !e.target.classList.contains('title-icon')) closeIconPicker();
-});
-
-/* ── 드래그 앤 드롭 ── */
-let dragSrc = null;
-
-function bindDragEvents(item) {
-  item.addEventListener('dragstart', e => {
-    dragSrc = item;
-    setTimeout(() => item.classList.add('dragging'), 0);
-    e.dataTransfer.effectAllowed = 'move';
-  });
-  item.addEventListener('dragend', () => {
-    item.classList.remove('dragging');
-    document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(el => {
-      el.classList.remove('drag-over-top','drag-over-bottom');
-    });
-    dragSrc = null;
-  });
-  item.addEventListener('dragover', e => {
-    e.preventDefault();
-    if (!dragSrc || dragSrc === item) return;
-    const r = item.getBoundingClientRect();
-    const mid = r.top + r.height / 2;
-    item.classList.toggle('drag-over-top',    e.clientY < mid);
-    item.classList.toggle('drag-over-bottom', e.clientY >= mid);
-  });
-  item.addEventListener('dragleave', () => {
-    item.classList.remove('drag-over-top','drag-over-bottom');
-  });
-  item.addEventListener('drop', e => {
-    e.preventDefault();
-    if (!dragSrc || dragSrc === item) return;
-    const r = item.getBoundingClientRect();
-    const before = e.clientY < r.top + r.height / 2;
-    item.parentNode.insertBefore(dragSrc, before ? item : item.nextSibling);
-    item.classList.remove('drag-over-top','drag-over-bottom');
-  });
-
-  // 드래그 핸들만 grabbing 느낌 (전체 카드 말고)
-  const handle = item.querySelector('.drag-handle');
-  if (handle) {
-    handle.addEventListener('mousedown', () => { item.draggable = true; });
-  }
-}
-
-function initDrag(timeline) {
-  timeline.querySelectorAll('.timeline-item').forEach(bindDragEvents);
-}
-
-// 페이지 로드 시 전체 초기화
-document.querySelectorAll('.timeline').forEach(initDrag);
-
-/* ── 편집 모드 ── */
-const EDITABLE_SEL = [
-  '.time-text','.event-title','.event-type-badge','.event-desc',
-  '.tag','.day-tab','.day-intro-text h2','.day-intro-text p',
-  '.fee-value','.fee-label','.choice-item','.tip-text','.meta-value','.hero-sub'
-].join(',');
-
-function startEdit() {
-  editBackup = {};
-  document.querySelectorAll(EDITABLE_SEL).forEach((el,i) => {
-    editBackup[i] = el.innerHTML;
-    el.setAttribute('contenteditable','true');
-    el.dataset.ei = i;
-  });
-  document.body.classList.add('edit-mode');
-  document.querySelector('.btn-edit').style.display   = 'none';
-  document.querySelector('.btn-save').style.display   = 'flex';
-  document.querySelector('.btn-cancel').style.display = 'flex';
-  document.querySelector('.edit-hint').style.display  = 'block';
-}
-function stopEdit() {
-  document.querySelectorAll('[contenteditable]').forEach(el => {
-    el.removeAttribute('contenteditable'); delete el.dataset.ei;
-  });
-  document.body.classList.remove('edit-mode');
-  document.querySelector('.btn-edit').style.display   = 'flex';
-  document.querySelector('.btn-save').style.display   = 'none';
-  document.querySelector('.btn-cancel').style.display = 'none';
-  document.querySelector('.edit-hint').style.display  = 'none';
-}
-function saveEdit() {
-  stopEdit();
-  const t = document.getElementById('saveToast');
-  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200);
-}
-function cancelEdit() {
-  document.querySelectorAll('[contenteditable]').forEach(el => {
-    const i = el.dataset.ei;
-    if (i !== undefined && editBackup[i] !== undefined) el.innerHTML = editBackup[i];
-  });
-  stopEdit();
-}
-document.addEventListener('keydown', e => {
-  if (!document.body.classList.contains('edit-mode')) return;
-  if (e.key === 'Escape') { cancelEdit(); return; }
-  if (e.key === 'Enter' && !e.shiftKey) {
-    const els = [...document.querySelectorAll('[contenteditable]')];
-    const idx = els.indexOf(document.activeElement);
-    if (idx !== -1 && idx < els.length - 1) { e.preventDefault(); els[idx+1].focus(); }
-  }
-});
-
-/* ── 추가 업그레이드 기능 ── */
-
-function saveToLocal(){
-  localStorage.setItem('mukho_trip_html', document.documentElement.outerHTML);
-}
-
-function autoSave(){
-  clearTimeout(window.__autosave);
-  window.__autosave = setTimeout(saveToLocal, 400);
-}
-
-function cloneItem(btn){
-  const item = btn.closest('.timeline-item');
-  const clone = item.cloneNode(true);
-  item.parentNode.insertBefore(clone, item.nextSibling);
-  bindDragEvents(clone);
-  autoSave();
-}
-
-function toggleCollapse(btn){
-  const item = btn.closest('.timeline-item');
-  item.classList.toggle('collapsed');
-  btn.textContent = item.classList.contains('collapsed') ? '+' : '—';
-  autoSave();
-}
-
-function toggleDarkMode(){
-  document.body.classList.toggle('dark-mode');
-  localStorage.setItem('mukho_darkmode', document.body.classList.contains('dark-mode'));
-}
-
-function enableAutoSaveBindings(){
-  document.addEventListener('input', autoSave);
-  document.addEventListener('click', function(e){
-    if(e.target.closest('.add-item-btn,.delete-item,.clone-item,.collapse-item,.add-day-btn,.del-day,.modal-btn.primary')){
-      setTimeout(autoSave,200);
-    }
-  });
-}
-
-function restoreDarkMode(){
-  const saved = localStorage.getItem('mukho_darkmode');
-  if(saved === 'true'){
-    document.body.classList.add('dark-mode');
-  }
-}
-
-enableAutoSaveBindings();
-restoreDarkMode();
-
-</script>
-
-
-<!-- KAKAO MAP API -->
-<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=554f46e78eae0af969d1c18e06539ce3"></script>
-
-<script>
+// 카카오맵 서비스에 등록할 정확한 도로명 주소 데이터 리스트
 const mapLocations = [
-  { title:'묵호항', lat:37.5509, lng:129.1167 },
-  { title:'논골담길', lat:37.5534, lng:129.1162 },
-  { title:'묵호등대', lat:37.5539, lng:129.1173 },
-  { title:'카라멜스테이션', lat:37.5485, lng:129.1146 },
-  { title:'도째비골 스카이밸리', lat:37.5546, lng:129.1170 },
-  { title:'삼척 준펜션', lat:37.4380, lng:129.1655 },
-  { title:'추암 촛대바위', lat:37.4749, lng:129.1590 }
+  { title: '논골담길', address: '강원특별자치도 동해시 논골1길 2' },
+  { title: '묵호등대', address: '강원특별자치도 동해시 등대오름길 34' },
+  { title: '카라멜스테이션', address: '강원특별자치도 동해시 발한로 219-11' },
+  { title: '도째비골 스카이밸리', address: '강원특별자치도 동해시 등대오름길 43-1' },
+  { title: '삼척 준펜션', address: '강원특별자치도 삼척시 근덕면 삼척로 2100' },
+  { title: '추암 촛대바위', address: '강원특별자치도 동해시 촛대바위길 28' }
 ];
 
 window.addEventListener('load', () => {
-
-  if(typeof kakao === 'undefined') return;
+  // 카카오맵 라이브러리 로드 여부 확인
+  if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) {
+    console.error("카카오맵 API 또는 서비스 라이브러리가 로드되지 않았습니다.");
+    return;
+  }
 
   const container = document.getElementById('naverMap');
-
   const map = new kakao.maps.Map(container, {
-    center: new kakao.maps.LatLng(37.53,129.13),
+    center: new kakao.maps.LatLng(37.53, 129.13), // 초기 임시 중심점
     level: 8
   });
 
-  const linePath = [];
+  // 주소-좌표 변환을 위한 Geocoder 객체 생성
+  const geocoder = new kakao.maps.services.Geocoder();
+  
+  // 모든 마커를 지도 화면 안에 한눈에 담기 위한 범위 재설정 객체
+  const bounds = new kakao.maps.LatLngBounds();
+  
+  // 비동기 주소 검색 결과들을 순서대로 추적하여 라인을 그리기 위한 배열 관리
+  const positionsWithOrder = new Array(mapLocations.length);
+  let processedCount = 0;
 
-  mapLocations.forEach(loc => {
+  mapLocations.forEach((loc, index) => {
+    // 텍스트 주소로 정확한 위/경도 좌표를 검색합니다
+    geocoder.addressSearch(loc.address, function(result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        
+        // 정해진 인덱스 자리에 좌표 저장 (동선 라인 연결용)
+        positionsWithOrder[index] = coords;
 
-    const position = new kakao.maps.LatLng(loc.lat, loc.lng);
-    linePath.push(position);
+        // 마커 생성
+        const marker = new kakao.maps.Marker({
+          map: map,
+          position: coords
+        });
 
-    const marker = new kakao.maps.Marker({
-      map: map,
-      position: position
-    });
+        // 마커 말풍선(인포윈도우) 생성
+        const infowindow = new kakao.maps.InfoWindow({
+          content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:var(--ink); border-radius:4px;">${loc.title}</div>`
+        });
 
-    const infowindow = new kakao.maps.InfoWindow({
-      content: `
-        <div style="padding:10px 14px;font-size:13px;line-height:1.6;">
-          <strong>${loc.title}</strong><br>
-          <a href="https://map.kakao.com/link/search/${encodeURIComponent(loc.title)}"
-             target="_blank"
-             style="color:#2563eb;text-decoration:none;">
-             카카오맵에서 보기
-          </a>
-        </div>
-      `
-    });
+        // 마커에 마우스오버/아웃 이벤트 등록
+        kakao.maps.event.addListener(marker, 'mouseover', function() {
+          infowindow.open(map, marker);
+        });
+        kakao.maps.event.addListener(marker, 'mouseout', function() {
+          infowindow.close();
+        });
 
-    kakao.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map, marker);
+        // 지도의 영역 확장을 위해 좌표 정보 누적
+        bounds.extend(coords);
+      } else {
+        console.warn(`주소를 찾지 못했습니다: ${loc.title} (${loc.address})`);
+      }
+
+      // 비동기 처리가 모두 완료되었는지 확인
+      processedCount++;
+      if (processedCount === mapLocations.length) {
+        // 1. 유효한 좌표들만 필터링해서 여행 동선 라인(Polyline) 생성
+        const validPath = positionsWithOrder.filter(p => p !== undefined);
+        if (validPath.length > 0) {
+          const polyline = new kakao.maps.Polyline({
+            map: map,
+            path: validPath,
+            strokeWeight: 3,
+            strokeColor: '#2a6b82', // --ocean-mid 색상 계열
+            strokeOpacity: 0.7,
+            strokeStyle: 'solid'
+          });
+        }
+        
+        // 2. 모든 마커가 화면에 다 나오도록 지도의 중심점과 레벨 자동 조정
+        map.setBounds(bounds);
+      }
     });
   });
-
-  const polyline = new kakao.maps.Polyline({
-    path: linePath,
-    strokeWeight: 4,
-    strokeOpacity: 0.8
-  });
-
-  polyline.setMap(map);
 });
 </script>
-
 </body>
 </html>
