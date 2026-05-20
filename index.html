@@ -150,4 +150,189 @@ let initialTimelineData = [
   { id: 'item1', day: 'day1', time: '13:30', title: '묵호역 도착 및 이동', desc: '설레는 동해 여행의 시작점. 묵호역에서 나와 바다 내음을 마시며 여정을 시작합니다.', tag: 'none', address: '' },
   { id: 'item2', day: 'day1', time: '14:00', title: '논골담길 산책', desc: '소박한 골목길 벽화와 주민들의 이야기가 담긴 감성 명소. 느린 걸음으로 걸어 올라갑니다.', tag: 'spot', address: '강원특별자치도 동해시 논골1길 2' },
   { id: 'item3', day: 'day1', time: '15:30', title: '묵호등대', desc: '동해바다가 한눈에 내려다보이는 시원한 전망과 짜릿한 스카이워크 체험을 동시에 즐깁니다.', tag: 'spot', address: '강원특별자치도 동해시 등대오름길 34' },
-  { id: 'item4', day: 'day1', time: '17:00', title: '카라멜스테이션',
+  { id: 'item4', day: 'day1', time: '17:00', title: '카라멜스테이션', desc: '독특한 인테리어와 시그니처 음료가 있는 힙한 감성 공간에서 잠시 휴식과 담소를 나눕니다.', tag: 'food', address: '강원특별자치도 동해시 발한로 219-11' },
+  { id: 'item5', day: 'day1', time: '18:30', title: '도째비골 스카이밸리', desc: '안락하고 깨끗한 숙소에서 여독을 풀고 맛있는 저녁 식사와 함께 하루를 마무리합니다.', tag: 'spot', address: '강원특별자치도 동해시 등대오름길 43-1' },
+  { id: 'item6', day: 'day2', time: '10:00', title: '삼척 준펜션', desc: '정든 숙소를 정리하고 둘째 날의 새로운 여정을 향해 출발합니다.', tag: 'stay', address: '강원특별자치도 삼척시 근덕면 삼척로 2100' },
+  { id: 'item7', day: 'day2', time: '10:30', title: '추암 촛대바위', desc: '동해의 보석, 애국가 첫 소절의 배경화면으로 유명한 신비로운 기암괴석과 출렁다리를 감상합니다.', tag: 'spot', address: '강원특별자치도 동해시 촛대바위길 28' },
+  { id: 'item8', day: 'day2', time: '13:00', title: '묵호역 복귀 및 해산', desc: '즐거웠던 기억을 안고 다시 묵호역으로 돌아와 여정을 마무리합니다. 다음에 또 만나요!', tag: 'none', address: '' }
+];
+
+let map, geocoder, polyline;
+let markers = [];
+let infowindows = [];
+let isEditMode = false;
+
+// 화면에 일정을 UI로 그려주는 함수
+function renderTimelineUI() {
+  const day1Container = document.getElementById('day1Items');
+  const day2Container = document.getElementById('day2Items');
+  
+  day1Container.innerHTML = '';
+  day2Container.innerHTML = '';
+
+  initialTimelineData.forEach(item => {
+    const itemHTML = `
+      <div class="item" data-id="${item.id}">
+        <div class="item-dot"></div>
+        <div class="item-time editable-field" contenteditable="${isEditMode}">${item.time}</div>
+        <div class="item-title editable-field" contenteditable="${isEditMode}">${item.title}</div>
+        <div class="item-desc editable-field" contenteditable="${isEditMode}">${item.desc}</div>
+        <input type="text" class="address-field" placeholder="지도 연동 도로명 주소 입력" value="${item.address || ''}">
+        <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
+        <select class="item-tag-select">
+          <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
+          <option value="spot" ${item.tag === 'spot' ? 'selected' : ''}>SPOT</option>
+          <option value="food" ${item.tag === 'food' ? 'selected' : ''}>CAFE/FOOD</option>
+          <option value="stay" ${item.tag === 'stay' ? 'selected' : ''}>STAY</option>
+        </select>
+      </div>
+    `;
+
+    if (item.day === 'day1') {
+      day1Container.insertAdjacentHTML('beforeend', itemHTML);
+    } else {
+      day2Container.insertAdjacentHTML('beforeend', itemHTML);
+    }
+  });
+}
+
+// 새로운 일정 항목을 배열 데이터에 동적으로 추가해주는 함수
+function addNewItem(day) {
+  const newId = 'item_' + Date.now();
+  initialTimelineData.push({
+    id: newId,
+    day: day,
+    time: '12:00',
+    title: '새로운 장소명',
+    desc: '상세 일정 설명을 적어주세요.',
+    tag: 'none',
+    address: ''
+  });
+  renderTimelineUI();
+}
+
+// 편집 모드 토글 시스템 조율
+const editBtn = document.getElementById('editBtn');
+editBtn.addEventListener('click', () => {
+  isEditMode = !isEditMode;
+  
+  if (isEditMode) {
+    // 1. 편집 활성화 모드 진입
+    document.body.classList.add('edit-mode');
+    editBtn.textContent = '저장 하기';
+    editBtn.classList.add('editing');
+    
+    // 글로벌 헤더 등도 수정가능하게 개방
+    document.querySelectorAll('.editable-field').forEach(el => el.setAttribute('contenteditable', 'true'));
+    renderTimelineUI(); 
+  } else {
+    // 2. 저장 프로세스 시작 (수정된 값 백업 수집)
+    document.body.classList.remove('edit-mode');
+    editBtn.textContent = '편집 모드';
+    editBtn.classList.remove('editing');
+    
+    document.querySelectorAll('.editable-field').forEach(el => el.setAttribute('contenteditable', 'false'));
+
+    // UI 엘리먼트 순회하며 데이터 동기화 반영
+    document.querySelectorAll('.timeline-items .item').forEach(itemEl => {
+      const id = itemEl.getAttribute('data-id');
+      const time = itemEl.querySelector('.item-time').innerText.trim();
+      const title = itemEl.querySelector('.item-title').innerText.trim();
+      const desc = itemEl.querySelector('.item-desc').innerText.trim();
+      const address = itemEl.querySelector('.address-field').value.trim();
+      const tag = itemEl.querySelector('.item-tag-select').value;
+
+      const dataObj = initialTimelineData.find(d => d.id === id);
+      if (dataObj) {
+        dataObj.time = time;
+        dataObj.title = title;
+        dataObj.desc = desc;
+        dataObj.address = address;
+        dataObj.tag = tag;
+      }
+    });
+
+    // 화면 갱신 후 바뀐 주소 바탕으로 카카오 지도 실시간 재구축
+    renderTimelineUI();
+    updateMapEngine();
+  }
+});
+
+// 야간 모드 복구
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+  themeBtn.textContent = document.body.classList.contains('dark-mode') ? '주간 모드' : '야간 모드';
+  if (!isEditMode) updateMapEngine();
+});
+
+// 주소 딕셔너리 기반 카카오지도 맵핑 코어 엔진
+function updateMapEngine() {
+  if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) return;
+
+  // 기존 맵 오브젝트 클리어 초기화
+  markers.forEach(m => m.setMap(null));
+  infowindows.forEach(i => i.close());
+  if (polyline) polyline.setMap(null);
+  markers = [];
+  infowindows = [];
+
+  // 주소가 실존하는 유효 데이터들만 필터링 가공
+  const validLocations = initialTimelineData.filter(loc => loc.address && loc.address.trim() !== '');
+  if (validLocations.length === 0) return;
+
+  const bounds = new kakao.maps.LatLngBounds();
+  const positionsWithOrder = new Array(validLocations.length);
+  let processedCount = 0;
+
+  validLocations.forEach((loc, index) => {
+    geocoder.addressSearch(loc.address, function(result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        positionsWithOrder[index] = coords;
+
+        const marker = new kakao.maps.Marker({ map: map, position: coords });
+        markers.push(marker);
+
+        const infowindow = new kakao.maps.InfoWindow({
+          content: `<div style="padding:6px 10px; font-size:12px; font-weight:500; color:#1a2530; border-radius:4px; background:#fff; border:none;">${loc.title}</div>`
+        });
+        infowindows.push(infowindow);
+
+        kakao.maps.event.addListener(marker, 'mouseover', function() { infowindow.open(map, marker); });
+        kakao.maps.event.addListener(marker, 'mouseout', function() { infowindow.close(); });
+
+        bounds.extend(coords);
+      }
+
+      processedCount++;
+      if (processedCount === validLocations.length) {
+        const validPath = positionsWithOrder.filter(p => p !== undefined);
+        if (validPath.length > 0) {
+          polyline = new kakao.maps.Polyline({
+            map: map,
+            path: validPath,
+            strokeWeight: 3,
+            strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82',
+            strokeOpacity: 0.7,
+            strokeStyle: 'solid'
+          });
+        }
+        map.setBounds(bounds);
+      }
+    });
+  });
+}
+
+// 시스템 부트스트랩 초기화
+window.addEventListener('load', () => {
+  const container = document.getElementById('naverMap');
+  map = new kakao.maps.Map(container, { center: new kakao.maps.LatLng(37.53, 129.13), level: 8 });
+  geocoder = new kakao.maps.services.Geocoder();
+
+  renderTimelineUI();
+  updateMapEngine();
+});
+</script>
+</body>
+</html>
