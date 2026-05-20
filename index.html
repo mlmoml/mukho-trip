@@ -83,19 +83,7 @@ body.edit-mode .btn-delete:hover { color:var(--coral); }
 
 .btn-map-link { display: inline-block; font-size: 11px; background: #fee500; color: #181c24; padding: 3px 8px; border-radius: 4px; font-weight: 500; margin-top: 6px; text-decoration: none; border: 1px solid #e1cb00; transition: background 0.2s; }
 .btn-map-link:hover { background: #fada00; }
-.btn-map-link + .btn-map-link { margin-left: 4px; }
-.btn-map-link.alt { background: var(--ocean-pale); color: var(--ocean-mid); border-color: var(--border); }
-.btn-map-link.alt:hover { background: var(--ocean-light); color: var(--white); }
 body.edit-mode .btn-map-link { display: none; }
-
-.map-controls { position:absolute; top:16px; left:16px; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:10px 12px; box-shadow:0 4px 16px rgba(26,37,48,0.08); backdrop-filter:blur(8px); z-index:20; display:flex; flex-direction:column; gap:6px; font-size:12px; transition:background 0.3s; }
-.map-controls-title { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--ocean-mid); font-weight:500; margin-bottom:2px; }
-.map-controls label { display:flex; align-items:center; gap:6px; color:var(--ink); cursor:pointer; user-select:none; font-size:12px; }
-.map-controls input[type="checkbox"] { accent-color:var(--ocean-mid); cursor:pointer; }
-.map-controls-divider { height:1px; background:var(--border); margin:4px 0; }
-.btn-skyview { background:var(--ocean-pale); border:1px solid var(--border); color:var(--ocean-mid); padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer; font-family:var(--sans); font-weight:500; transition:all 0.2s; }
-.btn-skyview:hover { background:var(--ocean-light); color:var(--white); }
-.btn-skyview.active { background:var(--coral); color:var(--white); border-color:var(--coral); }
 
 .item-tag-select { display:none; margin-top:6px; font-size:11px; padding:2px; border-radius:4px; background:var(--white); color:var(--ink); border:1px solid var(--border); }
 body.edit-mode .item-tag-select { display:inline-block; }
@@ -110,29 +98,20 @@ body.edit-mode .item-tag { display:none; }
 .map-container{position:relative;width:100%;height:100%;background:var(--sand);}
 @media(max-width:1024px){.map-container{height:400px;}}
 #naverMap{width:100%;height:100%;}
+
+/* 지도 내 바로가기 단추 커스텀 CSS */
+.kakao-redirect-btn {
+  position: absolute; top: 16px; left: 16px; z-index: 30;
+  background: #fee500; color: #181c24; font-family: var(--sans); font-size: 12px; font-weight: 600;
+  padding: 10px 16px; border-radius: 8px; border: 1px solid #e1cb00; text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s ease; display: flex; align-items: center; gap: 4px;
+}
+.kakao-redirect-btn:hover { background: #fada00; transform: translateY(-1px); }
+body.edit-mode .kakao-redirect-btn { display: none; }
+
 .map-overlay-card{position:absolute;bottom:24px;right:24px;background:var(--card-bg);padding:16px 20px;border-radius:8px;box-shadow:0 12px 32px rgba(26,37,48,0.08);backdrop-filter:blur(8px);border:1px solid rgba(214,232,239,0.5);z-index:20;max-width:320px;pointer-events:auto;transition:background 0.3s;}
 .overlay-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ocean);margin-bottom:4px;}
 .overlay-desc{font-size:12px;color:var(--muted);line-height:1.4;}
-.place-card { position:relative; width:300px; background:var(--white); border-radius:12px; box-shadow:0 12px 36px rgba(0,0,0,0.18); font-family:var(--sans); overflow:visible; margin-bottom:12px; color:var(--ink); }
-.place-card::after { content:''; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-top:9px solid var(--white); }
-.pc-header { display:flex; align-items:flex-start; justify-content:space-between; padding:14px 16px 6px; gap:8px; }
-.pc-name-wrap { flex:1; min-width:0; }
-.pc-name { font-size:15px; font-weight:600; line-height:1.3; color:var(--ink); }
-.pc-cat { font-size:11px; color:var(--ocean-mid); margin-top:3px; font-weight:500; }
-.pc-close { background:transparent; border:none; color:var(--muted); font-size:18px; cursor:pointer; padding:0; line-height:1; flex-shrink:0; }
-.pc-close:hover { color:var(--ink); }
-.pc-body { padding:0 16px 12px; font-size:12px; color:var(--muted); line-height:1.5; }
-.pc-addr { display:flex; gap:6px; align-items:flex-start; }
-.pc-addr-label { color:var(--ocean-mid); font-weight:500; flex-shrink:0; }
-.pc-phone { color:var(--coral); font-weight:500; margin-top:4px; font-family:var(--mono); }
-.pc-actions { display:flex; border-top:1px solid var(--border); }
-.pc-actions a { flex:1; padding:10px 4px; text-align:center; font-size:11px; color:var(--ocean-mid); text-decoration:none; font-weight:500; border-right:1px solid var(--border); transition:background 0.15s; }
-.pc-actions a:last-child { border-right:none; border-bottom-right-radius:12px; }
-.pc-actions a:first-child { border-bottom-left-radius:12px; }
-.pc-actions a:hover { background:var(--ocean-pale); }
-.pc-actions a.primary { background:var(--ocean-mid); color:#fff; font-weight:600; }
-.pc-actions a.primary:hover { background:var(--ocean); color:#fff; }
-
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--ocean-pale);border-radius:3px;}
@@ -174,18 +153,8 @@ body.edit-mode .item-tag { display:none; }
   </div>
 
   <div class="map-container">
+    <a href="#" id="kakaoLinkBtn" target="_blank" class="kakao-redirect-btn">현 위치 카카오맵에서 보기 ↗</a>
     <div id="naverMap"></div>
-
-    <div class="map-controls">
-      <div class="map-controls-title">Map Layers</div>
-      <label><input type="checkbox" id="chkTraffic"> 실시간 교통정보</label>
-      <label><input type="checkbox" id="chkBicycle"> 자전거 도로</label>
-      <label><input type="checkbox" id="chkTerrain"> 지형도</label>
-      <label><input type="checkbox" id="chkRoadview"> 로드뷰 도로</label>
-      <div class="map-controls-divider"></div>
-      <button class="btn-skyview" id="btnSkyview" type="button">스카이뷰 전환</button>
-    </div>
-
     <div class="map-overlay-card">
       <div class="overlay-title editable-field" id="overlayTitle">동선 가이드</div>
       <div class="overlay-desc editable-field" id="overlayDesc">가이드 정보 로딩 중...</div>
@@ -228,7 +197,7 @@ const defaultSchedule = [
 
 let textMetaData = {};
 let initialTimelineData = [];
-let map, geocoder, places, polyline;
+let map, geocoder, polyline;
 let markers = [];
 let infowindows = [];
 let isEditMode = false;
@@ -292,11 +261,6 @@ function renderTimelineUI() {
   initialTimelineData.forEach(item => {
     const hasAddress = item.address && item.address.trim() !== '';
     const kakaoMapSearchUrl = hasAddress ? `https://map.kakao.com/link/search/${encodeURIComponent(item.address)}` : '#';
-    const cachedCoords = markerMap[item.id] ? markerMap[item.id].coords : null;
-    const lat = cachedCoords ? cachedCoords.getLat() : null;
-    const lng = cachedCoords ? cachedCoords.getLng() : null;
-    const kakaoRouteUrl = (lat && lng) ? `https://map.kakao.com/link/to/${encodeURIComponent(item.title)},${lat},${lng}` : null;
-    const kakaoRoadviewUrl = (lat && lng) ? `https://map.kakao.com/link/roadview/${lat},${lng}` : null;
 
     const itemHTML = `
       <div class="item" data-id="${item.id}" onclick="focusMapLocation('${item.id}')">
@@ -308,9 +272,7 @@ function renderTimelineUI() {
         <input type="text" class="address-field" placeholder="정확한 도로명 주소 입력" value="${item.address || ''}" onclick="event.stopPropagation();">
         <div>
           <span class="item-tag tag-${item.tag}">${item.tag === 'none' ? '' : item.tag.toUpperCase()}</span>
-          ${hasAddress ? `<a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" onclick="event.stopPropagation();">상세 보기 ↗</a>` : ''}
-          ${kakaoRouteUrl ? `<a href="${kakaoRouteUrl}" target="_blank" class="btn-map-link alt" onclick="event.stopPropagation();">길찾기 ↗</a>` : ''}
-          ${kakaoRoadviewUrl ? `<a href="${kakaoRoadviewUrl}" target="_blank" class="btn-map-link alt" onclick="event.stopPropagation();">로드뷰 ↗</a>` : ''}
+          ${hasAddress ? `<a href="${kakaoMapSearchUrl}" target="_blank" class="btn-map-link" onclick="event.stopPropagation();">카카오맵 상세 보기 ↗</a>` : ''}
         </div>
         <select class="item-tag-select" onclick="event.stopPropagation();">
           <option value="none" ${item.tag === 'none' ? 'selected' : ''}>태그 없음</option>
@@ -327,7 +289,21 @@ function renderTimelineUI() {
 
 function focusMapLocation(itemId) {
   if (isEditMode) return;
-  openPlaceCard(itemId);
+  const targetData = markerMap[itemId];
+  if (!targetData) return;
+
+  infowindows.forEach(iw => iw.close());
+  map.panTo(targetData.coords);
+  targetData.infowindow.open(map, targetData.marker);
+}
+
+// 사용자가 지도를 움직이거나 확대할 때마다 상단 카카오맵 바로가기 버튼 링크를 실시간 갱신하는 함수
+function updateKakaoMapRedirectUrl() {
+  const center = map.getCenter();
+  const level = map.getLevel();
+  // 카카오맵 맵 링크 스펙 좌표 연동 구조 배정
+  const redirectUrl = `https://map.kakao.com/?map_type=TYPE_MAP&target=car&rt=,,&from=&to=&lu=&sys=web&eX=&eY=&sX=&sY=&cx=${center.getLng()}&cy=${center.getLat()}&level=${15 - level}`;
+  document.getElementById('kakaoLinkBtn').href = redirectUrl;
 }
 
 function addNewItem(day) {
@@ -405,62 +381,13 @@ themeBtn.addEventListener('click', () => {
   if (!isEditMode) updateMapEngine();
 });
 
-function escapeHtml(str) {
-  return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function closeAllOverlays() {
-  Object.values(markerMap).forEach(m => { if (m.overlay) m.overlay.setMap(null); });
-}
-
-function buildPlaceCardHTML(loc, placeData, lat, lng) {
-  const name = escapeHtml(loc.title);
-  const category = placeData && placeData.category_name ? escapeHtml(placeData.category_name.split('>').pop().trim()) : '';
-  const roadAddr = placeData && placeData.road_address_name ? escapeHtml(placeData.road_address_name) : '';
-  const jibunAddr = escapeHtml(loc.address || (placeData && placeData.address_name) || '');
-  const phone = placeData && placeData.phone ? escapeHtml(placeData.phone) : '';
-  const placeUrl = placeData && placeData.place_url ? placeData.place_url : `https://map.kakao.com/link/search/${encodeURIComponent(loc.address || loc.title)}`;
-  const routeUrl = `https://map.kakao.com/link/to/${encodeURIComponent(loc.title)},${lat},${lng}`;
-  const roadviewUrl = `https://map.kakao.com/link/roadview/${lat},${lng}`;
-
-  return `
-    <div class="place-card">
-      <div class="pc-header">
-        <div class="pc-name-wrap">
-          <div class="pc-name">${name}</div>
-          ${category ? `<div class="pc-cat">${category}</div>` : ''}
-        </div>
-        <button class="pc-close" type="button" onclick="closeAllOverlays()">×</button>
-      </div>
-      <div class="pc-body">
-        ${roadAddr ? `<div class="pc-addr"><span class="pc-addr-label">도로명</span><span>${roadAddr}</span></div>` : ''}
-        ${jibunAddr ? `<div class="pc-addr"><span class="pc-addr-label">${roadAddr ? '지번' : '주소'}</span><span>${jibunAddr}</span></div>` : ''}
-        ${phone ? `<div class="pc-phone">${phone}</div>` : ''}
-      </div>
-      <div class="pc-actions">
-        <a href="${placeUrl}" target="_blank">상세보기</a>
-        <a href="${roadviewUrl}" target="_blank">로드뷰</a>
-        <a href="${routeUrl}" target="_blank" class="primary">길찾기</a>
-      </div>
-    </div>
-  `;
-}
-
-function openPlaceCard(itemId) {
-  const entry = markerMap[itemId];
-  if (!entry) return;
-  closeAllOverlays();
-  entry.overlay.setMap(map);
-  map.panTo(entry.coords);
-}
-
 function updateMapEngine() {
   if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) return;
   markers.forEach(m => m.setMap(null));
-  closeAllOverlays();
+  infowindows.forEach(i => i.close());
   if (polyline) polyline.setMap(null);
-
-  markers = [];
+  
+  markers = []; 
   infowindows = [];
   markerMap = {};
 
@@ -474,41 +401,32 @@ function updateMapEngine() {
   validLocations.forEach((loc, index) => {
     geocoder.addressSearch(loc.address, function(result, status) {
       if (status === kakao.maps.services.Status.OK) {
-        const lat = result[0].y;
-        const lng = result[0].x;
-        const coords = new kakao.maps.LatLng(lat, lng);
+        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
         positionsWithOrder[index] = coords;
-
+        
         const marker = new kakao.maps.Marker({ map: map, position: coords });
         markers.push(marker);
-
-        const overlay = new kakao.maps.CustomOverlay({
-          position: coords,
-          content: buildPlaceCardHTML(loc, null, lat, lng),
-          xAnchor: 0.5,
-          yAnchor: 1,
-          zIndex: 100
+        
+        const kakaoMapSearchUrl = `https://map.kakao.com/link/search/${encodeURIComponent(loc.address)}`;
+        const infowindow = new kakao.maps.InfoWindow({ 
+          content: `
+            <div style="padding:8px 12px; font-size:12px; font-weight:500; color:#1a2530; background:#fff; border-radius:4px; border:1px solid #d6e8ef; text-align:center;">
+              <div style="margin-bottom:4px;">${loc.title}</div>
+              <a href="${kakaoMapSearchUrl}" target="_blank" style="font-size:10px; color:#2a6b82; text-decoration:underline; font-weight:bold;">상세 정보 보기 ↗</a>
+            </div>`
         });
-
-        markerMap[loc.id] = { marker, overlay, coords, placeData: null };
-
+        infowindows.push(infowindow);
+        
         kakao.maps.event.addListener(marker, 'click', function() {
-          openPlaceCard(loc.id);
+          infowindows.forEach(iw => iw.close());
+          infowindow.open(map, marker);
         });
 
-        places.keywordSearch(loc.title, function(data, pStatus) {
-          if (pStatus !== kakao.maps.services.Status.OK || !data || data.length === 0) return;
-          let closest = data[0];
-          let closestDist = Math.hypot(parseFloat(data[0].y) - parseFloat(lat), parseFloat(data[0].x) - parseFloat(lng));
-          for (let i = 1; i < data.length; i++) {
-            const d = Math.hypot(parseFloat(data[i].y) - parseFloat(lat), parseFloat(data[i].x) - parseFloat(lng));
-            if (d < closestDist) { closest = data[i]; closestDist = d; }
-          }
-          if (closestDist < 0.005) {
-            markerMap[loc.id].placeData = closest;
-            overlay.setContent(buildPlaceCardHTML(loc, closest, lat, lng));
-          }
-        });
+        markerMap[loc.id] = {
+          marker: marker,
+          infowindow: infowindow,
+          coords: coords
+        };
 
         bounds.extend(coords);
       }
@@ -516,64 +434,30 @@ function updateMapEngine() {
       if (processedCount === validLocations.length) {
         const validPath = positionsWithOrder.filter(p => p !== undefined);
         if (validPath.length > 0) {
-          polyline = new kakao.maps.Polyline({
-            map: map,
-            path: validPath,
-            strokeWeight: 3,
-            strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82',
-            strokeOpacity: 0.7,
-            strokeStyle: 'solid'
+          polyline = new kakao.maps.Polyline({ 
+            map: map, 
+            path: validPath, 
+            strokeWeight: 3, 
+            strokeColor: document.body.classList.contains('dark-mode') ? '#4a8da8' : '#2a6b82', 
+            strokeOpacity: 0.7, 
+            strokeStyle: 'solid' 
           });
         }
         map.setBounds(bounds);
-        if (!isEditMode) renderTimelineUI();
+        updateKakaoMapRedirectUrl(); // 초기 경계 설정 완료 후 핫링크 주소 업데이트
       }
     });
   });
 }
 
-function setupMapControls() {
-  const zoomControl = new kakao.maps.ZoomControl();
-  map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-
-  const mapTypeControl = new kakao.maps.MapTypeControl();
-  map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
-
-  map.setKeyboardShortcuts(true);
-
-  const overlayTypes = {
-    chkTraffic: kakao.maps.MapTypeId.TRAFFIC,
-    chkBicycle: kakao.maps.MapTypeId.BICYCLE,
-    chkTerrain: kakao.maps.MapTypeId.TERRAIN,
-    chkRoadview: kakao.maps.MapTypeId.ROADVIEW
-  };
-
-  Object.entries(overlayTypes).forEach(([id, typeId]) => {
-    document.getElementById(id).addEventListener('change', (e) => {
-      if (e.target.checked) map.addOverlayMapTypeId(typeId);
-      else map.removeOverlayMapTypeId(typeId);
-    });
-  });
-
-  const skyviewBtn = document.getElementById('btnSkyview');
-  skyviewBtn.addEventListener('click', () => {
-    const isSkyview = skyviewBtn.classList.toggle('active');
-    map.setMapTypeId(isSkyview ? kakao.maps.MapTypeId.HYBRID : kakao.maps.MapTypeId.ROADMAP);
-    skyviewBtn.textContent = isSkyview ? '일반지도 전환' : '스카이뷰 전환';
-  });
-}
-
 window.addEventListener('load', () => {
   const container = document.getElementById('naverMap');
-  map = new kakao.maps.Map(container, {
-    center: new kakao.maps.LatLng(37.53, 129.13),
-    level: 8,
-    mapTypeId: kakao.maps.MapTypeId.ROADMAP
-  });
+  map = new kakao.maps.Map(container, { center: new kakao.maps.LatLng(37.53, 129.13), level: 8 });
   geocoder = new kakao.maps.services.Geocoder();
-  places = new kakao.maps.services.Places();
-  setupMapControls();
-  kakao.maps.event.addListener(map, 'click', closeAllOverlays);
+
+  // 지도가 드래그되거나 확대/축소될 때마다 현재 중심 좌표 링크를 동적으로 연산하는 리스너 바인딩
+  kakao.maps.event.addListener(map, 'idle', updateKakaoMapRedirectUrl);
+
   loadDataFromServer();
 });
 </script>
